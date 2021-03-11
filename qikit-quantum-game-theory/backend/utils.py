@@ -26,27 +26,6 @@ def gen_predefined_payoffs(game_name: str, num_players: int, payoff_input: dict)
                     win_ind = outcome.find('1')
                     payoff[win_ind] = 1
                     payoff_table[outcome] = tuple(payoff)
-    elif game_name == "chicken":
-        for i in range(2**num_players):
-            outcome = format(i, '0'+str(num_players)+'b')
-            if outcome.count('1') == 0:
-                payoff_table[outcome] = tuple(np.zeros(num_players))
-            elif outcome.count('1') == 1:
-                payoff = np.array([])
-                for j in range(num_players):
-                    if outcome[j] == '0':
-                        payoff = np.append(payoff, -1)
-                    else:
-                        payoff = np.append(payoff, 1)
-                payoff_table[outcome] = tuple(payoff)
-            else:
-                payoff = np.array([])
-                for j in range(num_players):
-                    if outcome[j] == '0':
-                        payoff = np.append(payoff, 0)
-                    else:
-                        payoff = np.append(payoff, -10)
-                payoff_table[outcome] = tuple(payoff)
     elif game_name == 'prisoner':
         payoff_table = {'00': (-1, -1),
                         '01': (-3, 0),
