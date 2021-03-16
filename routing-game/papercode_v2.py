@@ -68,8 +68,7 @@ def opciones_clas(n):
         a2 = {'10': 1}
         a3 = {'11': 1}
         x = [a0, a1, a2, a3]
-    return np.random.choice(x) 
-    
+    return np.random.choice(x)     
 
 def crear_circuito(n):
     I_f = I = np.array([[1, 0],
@@ -125,7 +124,7 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 5                                                                                       # cantidad de ciudades
+n1 = 30                                                                                      # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))  # cantidad de paquetes
 n3 = 2                                                                                       # distancia máxima
 
@@ -133,11 +132,11 @@ costes_totales = []
 for tipo in ['c', 'q']:
     if tipo == 'c':
         version = "clásica"
-        tests = 200
+        tests = 100
         print("RESULTADOS DEL JUEGO CLÁSICO:")
     elif tipo == 'q':
         version = "cuántica"
-        tests = 100
+        tests = 50
         print("RESULTADOS DEL JUEGO CUÁNTICO:")
     costes = []
     for cant,n2 in enumerate(n2_array):    
@@ -178,7 +177,7 @@ for tipo in ['c', 'q']:
             try:
                 temp = tiemp/envio
             except ZeroDivisionError:
-                temp = tiemp/0.1
+                temp = 3*n3
             
             if (tipo == 'c' and (p+1)%50 == 0) or (tipo == 'q' and (p+1)%25 == 0):
                 #print("Uso de rutas:", veces)
