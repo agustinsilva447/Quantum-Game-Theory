@@ -124,10 +124,10 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 10                                                                                      # cantidad de ciudades
+n1 = 20                                                                                      # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))  # cantidad de paquetes
-n3 = 5                                                                                       # distancia máxima
-n4 = 5                                                                                       # cantidad de iteraciones
+n3 = 10                                                                                      # distancia máxima
+n4 = 25                                                                                      # cantidad de iteraciones
 
 tiempos_totales = []
 costes_totales = []
