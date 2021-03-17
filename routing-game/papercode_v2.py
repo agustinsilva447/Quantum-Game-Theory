@@ -80,7 +80,6 @@ def crear_circuito(n):
         X_f = np.kron(X_f, X)
     J = Operator(1 / np.sqrt(2) * (I_f + 1j * X_f))    
     J_dg = J.adjoint()
-    
     if n==1:
         dx = np.pi
         dy = 0
@@ -89,7 +88,6 @@ def crear_circuito(n):
         dx = np.pi/2
         dy = np.pi/4
         dz = 0
-
     circ = QuantumCircuit(n,n)
     circ.append(J, range(n))
     for q in range(n):
@@ -124,7 +122,7 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 30                                                                                      # cantidad de ciudades
+n1 = 40                                                                                      # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))  # cantidad de paquetes
 n3 = 2                                                                                       # distancia máxima
 
@@ -150,7 +148,6 @@ for tipo in ['c', 'q']:
             all_edges2 = [e for e in net2.edges]
             veces = np.zeros(len(all_edges2))
             i = rutas = tiemp = envio = 0
-
             while not flag:
                 all_edges = [e for e in net1.edges]
                 paquetes_ruta = paquetes_en_ruta(caminitos, all_edges[i])
@@ -177,8 +174,7 @@ for tipo in ['c', 'q']:
             try:
                 temp = tiemp/envio
             except ZeroDivisionError:
-                temp = 3*n3
-            
+                temp = 3*n3            
             if (tipo == 'c' and (p+1)%50 == 0) or (tipo == 'q' and (p+1)%25 == 0):
                 #print("Uso de rutas:", veces)
                 #print("Total de rutas: {}/{}".format(rutas,len(all_edges2)))
@@ -193,11 +189,11 @@ for tipo in ['c', 'q']:
         coste = coste / tests
         costes.append(coste)
         print("{:0>3} - Coste total de la versión {} para {} ciudades y {} paquetes es {}.\n".format(cant+1, version, n1, n2, coste))
-    costes_totales.append(costes)
-    
+    costes_totales.append(costes)    
+
 plt.figure(figsize=(10,6))
 plt.plot(n2_array,costes_totales[0],'blue', label = 'clásico')
 plt.plot(n2_array,costes_totales[1],'red', label = 'cuántico')
 plt.legend()
-plt.title("Coste de los protocolo clásico y cuántico \nen función de la cantidad de paquetes")
+plt.title("Coste de los protocolo clásico y cuántico \nen función de la cantidad de paquetes ({} nodos)".format(n1))
 plt.show()
