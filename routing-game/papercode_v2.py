@@ -40,12 +40,10 @@ def caminos(net1, moves):
         cam = []
         try:
             p = nx.dijkstra_path(net1,int(moves[j,0]),int(moves[j,1]))
-            #print("{:0>3} - Para llegar desde {} hasta {} hay que hacer el siguiente camino: {}".format(j, moves[j,0],moves[j,1], p))        
             for e in range(len(p)-1):
                 cam.append(tuple(sorted((p[e], p[e+1]))))    
         except:
             i += 1
-            #print("{:0>3} - NO SE PUEDE CONECTAR EL PUNTO {} CON EL PUNTO {}.".format(j+1, int(moves[j,0]),int(moves[j,1])))  
             if i == len(moves):
                 return caminitos, True        
         caminitos.append(cam)
@@ -71,9 +69,13 @@ def opciones_clas(n):
     return np.random.choice(x)     
 
 def crear_circuito(n):
-    I_f = I = np.array([[1, 0],
+    I_f = np.array([[1, 0],
+                  [0, 1]]) 
+    I = np.array([[1, 0],
                   [0, 1]])
-    X_f = X = np.array([[0, 1],
+    X_f = np.array([[0, 1],
+                  [1, 0]]) 
+    X = np.array([[0, 1],
                   [1, 0]])    
     for q in range(n-1):
         I_f = np.kron(I_f, I)
@@ -122,22 +124,26 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 40                                                                                      # cantidad de ciudades
+n1 = 20                                                                                      # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))  # cantidad de paquetes
 n3 = 2                                                                                       # distancia máxima
+n4 = 10                                                                                      # cantidad de iteraciones
 
+tiempos_totales = []
 costes_totales = []
 for tipo in ['c', 'q']:
     if tipo == 'c':
         version = "clásica"
-        tests = 100
+        tests = 2 * n4
         print("RESULTADOS DEL JUEGO CLÁSICO:")
     elif tipo == 'q':
         version = "cuántica"
-        tests = 50
+        tests = n4
         print("RESULTADOS DEL JUEGO CUÁNTICO:")
+    tiempos = []
     costes = []
     for cant,n2 in enumerate(n2_array):    
+        t = 0
         coste = 0
         for p in range(tests):
             a = generar_mapa()                            # genero matriz
@@ -147,8 +153,11 @@ for tipo in ['c', 'q']:
             caminitos, flag = caminos(net1, moves)
             all_edges2 = [e for e in net2.edges]
             veces = np.zeros(len(all_edges2))
-            i = rutas = tiemp = envio = 0
+            i = 0
+            tiemp = 0
+            envio = 0
             while not flag:
+                t += 1
                 all_edges = [e for e in net1.edges]
                 paquetes_ruta = paquetes_en_ruta(caminitos, all_edges[i])
                 #print("Todas las rutas", all_edges)
@@ -165,7 +174,6 @@ for tipo in ['c', 'q']:
                         envio += 1
                         moves[ganadores[x]] = [-1,-2]
                         for y in caminitos[ganadores[x]]:
-                            rutas += 1
                             veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] += 1
                             tiemp += 2 * net2[y[0]][y[1]]['weight'] * veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] - 1
                             net1.remove_edges_from([y])
@@ -174,26 +182,47 @@ for tipo in ['c', 'q']:
             try:
                 temp = tiemp/envio
             except ZeroDivisionError:
-                temp = 3*n3            
-            if (tipo == 'c' and (p+1)%50 == 0) or (tipo == 'q' and (p+1)%25 == 0):
-                #print("Uso de rutas:", veces)
-                #print("Total de rutas: {}/{}".format(rutas,len(all_edges2)))
-                #print("Envíos: {}/{}".format(envio, n2))
-                #print("Tiempo:",tiemp)
+                temp = 2*n3            
+            if ((p+1)%(tests/2) == 0):
                 print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, tiemp, envio, temp))
             coste += temp
             #edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
             #edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
             #nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
             #plt.show()    
+        t = t / tests
+        tiempos.append(t)
         coste = coste / tests
         costes.append(coste)
-        print("{:0>3} - Coste total de la versión {} para {} ciudades y {} paquetes es {}.\n".format(cant+1, version, n1, n2, coste))
+        print("{:0>3} - Versión {} para {} ciudades y {} paquetes. Coste = {}. Tiempo = {}\n".format(cant+1, version, n1, n2, coste, t))
+    tiempos_totales.append(tiempos)
     costes_totales.append(costes)    
 
+"""
+
 plt.figure(figsize=(10,6))
-plt.plot(n2_array,costes_totales[0],'blue', label = 'clásico')
-plt.plot(n2_array,costes_totales[1],'red', label = 'cuántico')
+plt.plot(n2_array,costes_totales[0],'blue', label = 'Classical')
+plt.plot(n2_array,costes_totales[1],'red', label = 'Quantum')
 plt.legend()
-plt.title("Coste de los protocolo clásico y cuántico \nen función de la cantidad de paquetes ({} nodos)".format(n1))
+plt.title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
+plt.show()
+
+"""
+
+fig, axs = plt.subplots(1, 2,figsize=(18,6))
+
+axs[0].set_title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
+axs[0].plot(n2_array,costes_totales[0],'blue', label = 'Classical')
+axs[0].plot(n2_array,costes_totales[1],'red', label = 'Quantum')
+axs[0].set_xlabel('Number of packages')
+axs[0].set_ylabel('Cost')
+
+axs[1].set_title("Number of attempts to connect the source \nto the destination of the packets ({} nodes)".format(n1))
+axs[1].plot(n2_array,tiempos_totales[0],'blue', label = 'Classical')
+axs[1].plot(n2_array,tiempos_totales[1],'red', label = 'Quantum')
+axs[1].set_xlabel('Number of packages')
+axs[1].set_ylabel('Times')
+
+axs[0].legend()
+axs[1].legend()
 plt.show()
