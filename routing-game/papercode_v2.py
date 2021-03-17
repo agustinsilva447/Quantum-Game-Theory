@@ -124,10 +124,10 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 20                                                                                      # cantidad de ciudades
+n1 = 10                                                                                      # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))  # cantidad de paquetes
-n3 = 2                                                                                       # distancia máxima
-n4 = 25                                                                                      # cantidad de iteraciones
+n3 = 5                                                                                       # distancia máxima
+n4 = 5                                                                                       # cantidad de iteraciones
 
 tiempos_totales = []
 costes_totales = []
@@ -171,13 +171,13 @@ for tipo in ['c', 'q']:
                     ganadores = juego(paquetes_ruta, tipo)
                     #print("Ganadores:",ganadores, "\n")
                     for x in range(len(ganadores)):
-                        envio += 1
                         moves[ganadores[x]] = [-1,-2]
                         for y in caminitos[ganadores[x]]:
                             veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] += 1
                             tiemp += 2 * net2[y[0]][y[1]]['weight'] * veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] - 1
                             net1.remove_edges_from([y])
-                            #net2[y[0]][y[1]]['color'] = colores[envio] #ver después
+                            net2[y[0]][y[1]]['color'] = colores[envio]
+                        envio += 1
                     caminitos, flag = caminos(net1, moves)
             try:
                 temp = tiemp/envio
@@ -185,11 +185,7 @@ for tipo in ['c', 'q']:
                 temp = 2*n3            
             if ((p+1)%(tests/2) == 0):
                 print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, tiemp, envio, temp))
-            coste += temp
-            #edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
-            #edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
-            #nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
-            #plt.show()    
+            coste += temp   
         t = t / tests
         tiempos.append(t)
         coste = coste / tests
@@ -206,6 +202,16 @@ plt.plot(n2_array,costes_totales[1],'red', label = 'Quantum')
 plt.legend()
 plt.title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
 plt.show()
+
+for e in net2.edges():
+    if net2[e[0]][e[1]]['color']=='black':
+        net2[e[0]][e[1]]['weight'] *= 5
+    else:
+        net2[e[0]][e[1]]['weight'] *=2
+edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
+edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
+nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
+plt.show() 
 
 """
 
