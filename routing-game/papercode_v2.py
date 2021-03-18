@@ -125,7 +125,7 @@ def juego(lista, tipo):
     return lista
 
 n1 = 20                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
+n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))     # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
 n4 = 10                                                                                         # cantidad de iteraciones
 
@@ -150,14 +150,14 @@ for tipo in ['c', 'q']:
             net1, edge_weights_list = generar_red(a)      # genero red
             net2, edge_weights_list = generar_red(a)      # genero copia de red
             moves, colores = generar_paquetes(n1,n2)      # genero paquetes
-            caminitos, flag = caminos(net1, moves)
+            caminitos, flag = caminos(net1, moves)        # caminos óptimos
             all_edges2 = [e for e in net2.edges]
             veces = np.zeros(len(all_edges2))
             i = 0
             tiemp = 0
             envio = 0
             while not flag:
-                #t += 1 #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                t += 1 #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
                 all_edges = [e for e in net1.edges]
                 paquetes_ruta = paquetes_en_ruta(caminitos, all_edges[i])
                 #print("Todas las rutas", all_edges)
@@ -166,7 +166,7 @@ for tipo in ['c', 'q']:
                 #print("Paquetes que disputan:", paquetes_ruta)
                 if paquetes_ruta == []:
                     #t -= 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-                    t += 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    #t += 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
                     i += 1
                 else:
                     i = 0
@@ -182,7 +182,7 @@ for tipo in ['c', 'q']:
                         envio += 1
                     caminitos, flag = caminos(net1, moves)
             try:
-                temp = tiemp/envio
+                temp = tiemp/envio    #tiempo de envío por paquete
             except ZeroDivisionError:
                 temp = 2*n3            
             if ((p+1)%(tests/2) == 0):
