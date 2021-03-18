@@ -49,10 +49,10 @@ def caminos(net1, moves):
         caminitos.append(cam)
     return caminitos, False
 
-def paquetes_en_ruta(caminos, ruta):
+def paquetes_en_ruta(camin, ruta):
     lista = []
     for i in range(n2):
-        if ruta in caminos[i]:
+        if ruta in camin[i]:
             lista.append(i)
     return lista
 
@@ -124,10 +124,10 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 20                                                                                      # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))  # cantidad de paquetes
-n3 = 10                                                                                      # distancia máxima
-n4 = 25                                                                                      # cantidad de iteraciones
+n1 = 20                                                                                         # cantidad de ciudades
+n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
+n3 = 2                                                                                          # distancia máxima
+n4 = 10                                                                                         # cantidad de iteraciones
 
 tiempos_totales = []
 costes_totales = []
@@ -157,14 +157,16 @@ for tipo in ['c', 'q']:
             tiemp = 0
             envio = 0
             while not flag:
-                t += 1
+                #t += 1 #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
                 all_edges = [e for e in net1.edges]
                 paquetes_ruta = paquetes_en_ruta(caminitos, all_edges[i])
                 #print("Todas las rutas", all_edges)
-                #print("Rutas de cada paquete:", caminitos)
                 #print("Ruta disputada:",all_edges[i])
+                #print("Rutas de cada paquete:", caminitos)
                 #print("Paquetes que disputan:", paquetes_ruta)
                 if paquetes_ruta == []:
+                    #t -= 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    t += 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
                     i += 1
                 else:
                     i = 0
