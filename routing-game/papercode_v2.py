@@ -203,11 +203,11 @@ plt.legend()
 plt.title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
 plt.show()
 
-for e in net2.edges():
-    if net2[e[0]][e[1]]['color']=='black':
-        net2[e[0]][e[1]]['weight'] *= 5
-    else:
-        net2[e[0]][e[1]]['weight'] *=2
+#for e in net2.edges():                         #sirve para n3 = 2
+#    if net2[e[0]][e[1]]['color']=='black':
+#        net2[e[0]][e[1]]['weight'] *= 5
+#    else:
+#        net2[e[0]][e[1]]['weight'] *=2
 edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
 edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
