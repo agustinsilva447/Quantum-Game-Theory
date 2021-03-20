@@ -127,7 +127,7 @@ def juego(lista, tipo):
 n1 = 20                                                                                         # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))     # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 10                                                                                         # cantidad de iteraciones
+n4 = 5                                                                                          # cantidad de iteraciones
 
 tiempos_totales = []
 costes_totales = []
@@ -205,23 +205,26 @@ plt.legend()
 plt.title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
 plt.show()
 
-#for e in net2.edges():                         #sirve para n3 = 2
-#    if net2[e[0]][e[1]]['color']=='black':
-#        net2[e[0]][e[1]]['weight'] *= 5
-#    else:
-#        net2[e[0]][e[1]]['weight'] *=2
+"""
+
+print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
+for e in net2.edges():                         #sirve para n3 = 2
+    if net2[e[0]][e[1]]['color']=='black':
+        net2[e[0]][e[1]]['weight'] *= 5
+    else:
+        net2[e[0]][e[1]]['weight'] *=2
 edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
 edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 
-"""
+
 
 fig, axs = plt.subplots(1, 2,figsize=(18,6))
 
 axs[0].set_title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
-axs[0].plot(n2_array,costes_totales[0],'blue', label = 'Classical')
-axs[0].plot(n2_array,costes_totales[1],'red', label = 'Quantum')
+axs[0].plot(n2_array,costes_totales[0],'blue', label = 'Classical', marker='o')
+axs[0].plot(n2_array,costes_totales[1],'red', label = 'Quantum', marker='o')
 axs[0].set_xlabel('Number of packages')
 axs[0].set_ylabel('Cost')
 
