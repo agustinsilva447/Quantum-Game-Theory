@@ -90,6 +90,10 @@ def crear_circuito(n):
         dx = np.pi/2
         dy = np.pi/4
         dz = 0
+    elif n==4:
+        dx = 0 #calcular
+        dy = 0 #calcular
+        dz = 0 #calcular
     circ = QuantumCircuit(n,n)
     circ.append(J, range(n))
     for q in range(n):
@@ -125,9 +129,9 @@ def juego(lista, tipo):
     return lista
 
 n1 = 20                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.5 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.5 * n1)))     # cantidad de paquetes
+n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 5                                                                                          # cantidad de iteraciones
+n4 = 25                                                                                          # cantidad de iteraciones
 
 tiempos_totales = []
 costes_totales = []
@@ -207,6 +211,7 @@ plt.show()
 
 """
 
+print(crear_circuito(2))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
 for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
@@ -229,8 +234,8 @@ axs[0].set_xlabel('Number of packages')
 axs[0].set_ylabel('Cost')
 
 axs[1].set_title("Number of attempts to connect the source \nto the destination of the packets ({} nodes)".format(n1))
-axs[1].plot(n2_array,tiempos_totales[0],'blue', label = 'Classical')
-axs[1].plot(n2_array,tiempos_totales[1],'red', label = 'Quantum')
+axs[1].plot(n2_array,tiempos_totales[0],'blue', label = 'Classical', marker='o')
+axs[1].plot(n2_array,tiempos_totales[1],'red', label = 'Quantum', marker='o')
 axs[1].set_xlabel('Number of packages')
 axs[1].set_ylabel('Times')
 
