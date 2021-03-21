@@ -91,9 +91,9 @@ def crear_circuito(n):
         dy = np.pi/4
         dz = 0
     elif n==4:
-        dx = 0 #calcular
-        dy = 0 #calcular
-        dz = 0 #calcular
+        dx = np.pi/2
+        dy = 3 * np.pi/8
+        dz = 3 * np.pi/4
     circ = QuantumCircuit(n,n)
     circ.append(J, range(n))
     for q in range(n):
