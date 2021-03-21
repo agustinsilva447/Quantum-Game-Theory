@@ -186,7 +186,7 @@ for tipo in ['c', 'q']:
                         envio += 1
                     caminitos, flag = caminos(net1, moves)
             try:
-                temp = tiemp/envio    #tiempo de envío por paquete
+                temp = tiemp/envio    #tiempo de envío por paquete 
             except ZeroDivisionError:
                 temp = 2*n3            
             if ((p+1)%(tests/2) == 0):
