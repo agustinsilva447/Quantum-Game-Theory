@@ -66,6 +66,16 @@ def opciones_clas(n):
         a2 = {'10': 1}
         a3 = {'11': 1}
         x = [a0, a1, a2, a3]
+    return np.random.choice(x)   
+
+def opciones_cuan(n):
+    if n == 1:
+        a = {'1': 1}
+        x = [a]
+    elif n == 2:
+        a1 = {'01': 1}
+        a2 = {'10': 1}
+        x = [a1, a2]
     return np.random.choice(x)     
 
 def crear_circuito(n):
@@ -115,12 +125,15 @@ def juego(lista, tipo):
                     measurement = opciones_clas(jug)
                         
                 elif tipo == 'q':
+                    measurement = opciones_cuan(jug)
+                    """
                     circ = crear_circuito(jug)
                     backend = Aer.get_backend('qasm_simulator')
                     job = execute(circ, backend=backend, shots=1)
                     result = job.result()
                     measurement = result.get_counts(circ)
-                
+                    """
+
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
@@ -128,17 +141,17 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 20                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
+n1 = 10                                                                                         # cantidad de ciudades
+n2_array = np.arange(int(np.ceil(0.1 * n1)), int(np.ceil(5 * n1)), int(np.ceil(0.1 * n1)))   # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 25                                                                                          # cantidad de iteraciones
+n4 = 100                                                                                          # cantidad de iteraciones
 
 tiempos_totales = []
 costes_totales = []
 for tipo in ['c', 'q']:
     if tipo == 'c':
         version = "clásica"
-        tests = 2 * n4
+        tests = n4
         print("RESULTADOS DEL JUEGO CLÁSICO:")
     elif tipo == 'q':
         version = "cuántica"
@@ -217,10 +230,11 @@ for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
         net2[e[0]][e[1]]['weight'] *= 5
     else:
-        net2[e[0]][e[1]]['weight'] *=2
+        net2[e[0]][e[1]]['weight'] *=4
 edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
 edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
-nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
+#nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
+nx.draw(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 
 
