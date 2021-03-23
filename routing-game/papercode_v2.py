@@ -60,13 +60,15 @@ def opciones_clas(n):
     if n == 1:
         a = {'1': 1}
         x = [a]
+        return np.random.choice(x)
     elif n == 2:
+        p1 = 0
         a0 = {'00': 1}
         a1 = {'01': 1}
         a2 = {'10': 1}
         a3 = {'11': 1}
         x = [a0, a1, a2, a3]
-    return np.random.choice(x)   
+        return np.random.choice(x, p = [p1*p1, p1*(1-p1), (1-p1)*p1, (1-p1)*(1-p1)])
 
 def opciones_cuan(n):
     if n == 1:
@@ -142,11 +144,13 @@ def juego(lista, tipo):
     return lista
 
 n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.1 * n1)), int(np.ceil(5 * n1)), int(np.ceil(0.1 * n1)))      # cantidad de paquetes
+n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 100                                                                                        # cantidad de iteraciones
+n4 = 5                                                                                         # cantidad de iteraciones
 
 tiempos_totales = []
+tiempos_totales1 = []
+tiempos_totales2 = []
 costes_totales = []
 for tipo in ['c', 'q']:
     if tipo == 'c':
@@ -158,9 +162,13 @@ for tipo in ['c', 'q']:
         tests = n4
         print("RESULTADOS DEL JUEGO CUÁNTICO:")
     tiempos = []
+    tiempos1 = []
+    tiempos2 = []
     costes = []
     for cant,n2 in enumerate(n2_array):    
         t = 0
+        t1 = 0
+        t2 = 0
         coste = 0
         for p in range(tests):
             a = generar_mapa()                            # genero matriz
@@ -175,6 +183,7 @@ for tipo in ['c', 'q']:
             envio = 0
             while not flag:
                 t += 1 #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                t1 += 1
                 all_edges = [e for e in net1.edges]
                 paquetes_ruta = paquetes_en_ruta(caminitos, all_edges[i])
                 #print("Todas las rutas", all_edges)
@@ -182,8 +191,8 @@ for tipo in ['c', 'q']:
                 #print("Rutas de cada paquete:", caminitos)
                 #print("Paquetes que disputan:", paquetes_ruta)
                 if paquetes_ruta == []:
-                    #t -= 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-                    #t += 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    t1 -= 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    t2 += 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
                     i += 1
                 else:
                     i = 0
@@ -206,23 +215,18 @@ for tipo in ['c', 'q']:
                 print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, tiemp, envio, temp))
             coste += temp   
         t = t / tests
+        t1 = t1 / tests
+        t2 = t2 / tests
         tiempos.append(t)
+        tiempos1.append(t1)
+        tiempos2.append(t2)
         coste = coste / tests
         costes.append(coste)
         print("{:0>3} - Versión {} para {} ciudades y {} paquetes. Coste = {}. Tiempo = {}\n".format(cant+1, version, n1, n2, coste, t))
     tiempos_totales.append(tiempos)
+    tiempos_totales1.append(tiempos1)
+    tiempos_totales2.append(tiempos2)
     costes_totales.append(costes)    
-
-"""
-
-plt.figure(figsize=(10,6))
-plt.plot(n2_array,costes_totales[0],'blue', label = 'Classical')
-plt.plot(n2_array,costes_totales[1],'red', label = 'Quantum')
-plt.legend()
-plt.title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
-plt.show()
-
-"""
 
 print(crear_circuito(2))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
@@ -237,22 +241,35 @@ edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 nx.draw(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 
+fig, axs = plt.subplots(2, 2,figsize=(18,18))
 
+axs[0, 0].set_title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
+axs[0, 0].plot(n2_array,costes_totales[0],'blue', label = 'Classical', marker='o')
+axs[0, 0].plot(n2_array,costes_totales[1],'red', label = 'Quantum', marker='o')
+#axs[0, 0].set_xlabel('Number of packages')
+axs[0, 0].set_ylabel('Cost')
 
-fig, axs = plt.subplots(1, 2,figsize=(18,6))
+axs[0, 1].set_title("Total number of attempts to connect the source \nto the destination of the packets ({} nodes)".format(n1))
+axs[0, 1].plot(n2_array,tiempos_totales[0],'blue', label = 'Classical', marker='o')
+axs[0, 1].plot(n2_array,tiempos_totales[1],'red', label = 'Quantum', marker='o')
+#axs[0, 1].set_xlabel('Number of packages')
+axs[0, 1].set_ylabel('Times')
 
-axs[0].set_title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
-axs[0].plot(n2_array,costes_totales[0],'blue', label = 'Classical', marker='o')
-axs[0].plot(n2_array,costes_totales[1],'red', label = 'Quantum', marker='o')
-axs[0].set_xlabel('Number of packages')
-axs[0].set_ylabel('Cost')
+axs[1, 0].set_title("Number of attempts (games) to connect.")
+axs[1, 0].plot(n2_array,tiempos_totales1[0],'blue', label = 'Classical', marker='o')
+axs[1, 0].plot(n2_array,tiempos_totales1[1],'red', label = 'Quantum', marker='o')
+axs[1, 0].set_xlabel('Number of packages')
+axs[1, 0].set_ylabel('Times')
 
-axs[1].set_title("Number of attempts to connect the source \nto the destination of the packets ({} nodes)".format(n1))
-axs[1].plot(n2_array,tiempos_totales[0],'blue', label = 'Classical', marker='o')
-axs[1].plot(n2_array,tiempos_totales[1],'red', label = 'Quantum', marker='o')
-axs[1].set_xlabel('Number of packages')
-axs[1].set_ylabel('Times')
+axs[1, 1].set_title("Number of attempts (empty) to connect.")
+axs[1, 1].plot(n2_array,tiempos_totales2[0],'blue', label = 'Classical', marker='o')
+axs[1, 1].plot(n2_array,tiempos_totales2[1],'red', label = 'Quantum', marker='o')
+axs[1, 1].set_xlabel('Number of packages')
+axs[1, 1].set_ylabel('Times')
 
-axs[0].legend()
-axs[1].legend()
+axs[0, 0].legend()
+axs[0, 1].legend()
+axs[1, 0].legend()
+axs[1, 1].legend()
+
 plt.show()
