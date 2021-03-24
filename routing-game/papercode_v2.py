@@ -56,19 +56,18 @@ def paquetes_en_ruta(camin, ruta):
             lista.append(i)
     return lista
 
-def opciones_clas(n):
+def opciones_clas(n, tipo):
     if n == 1:
         a = {'1': 1}
         x = [a]
         return np.random.choice(x)
     elif n == 2:
-        p1 = 0.9
         a0 = {'00': 1}
         a1 = {'01': 1}
         a2 = {'10': 1}
         a3 = {'11': 1}
         x = [a0, a1, a2, a3]
-        return np.random.choice(x, p = [p1*p1, p1*(1-p1), (1-p1)*p1, (1-p1)*(1-p1)])
+        return np.random.choice(x, p = [tipo*tipo, tipo*(1-tipo), (1-tipo)*tipo, (1-tipo)*(1-tipo)])
 
 def opciones_cuan(n):
     if n == 1:
@@ -123,18 +122,19 @@ def juego(lista, tipo):
             ganadores = []            
             for j in range(int(np.ceil(m/2))):
                 jug = 2 - int(m == j+int(np.ceil(m/2)))
-                if tipo == 'c':
-                    measurement = opciones_clas(jug)
                         
-                elif tipo == 'q':
+                if tipo == 'q':
                     measurement = opciones_cuan(jug)
                     """
+                    # esto es para correr el circuito en el simulador de IBM
                     circ = crear_circuito(jug)
                     backend = Aer.get_backend('qasm_simulator')
                     job = execute(circ, backend=backend, shots=1)
                     result = job.result()
                     measurement = result.get_counts(circ)
                     """
+                else:
+                    measurement = opciones_clas(jug, tipo)
 
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
@@ -146,21 +146,22 @@ def juego(lista, tipo):
 n1 = 20                                                                                         # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 25                                                                                         # cantidad de iteraciones
+n4 = 50                                                                                         # cantidad de iteraciones
+p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
 
 tiempos_totales = []
 tiempos_totales1 = []
 tiempos_totales2 = []
 costes_totales = []
-for tipo in ['c', 'q']:
-    if tipo == 'c':
-        version = "clásica"
-        tests = n4
-        print("RESULTADOS DEL JUEGO CLÁSICO:")
-    elif tipo == 'q':
+for tipo in p1:
+    if tipo == 'q':
         version = "cuántica"
         tests = n4
         print("RESULTADOS DEL JUEGO CUÁNTICO:")
+    else:
+        version = "clásica"
+        tests = n4
+        print("RESULTADOS DEL JUEGO CLÁSICO (p = {}):".format(tipo))
     tiempos = []
     tiempos1 = []
     tiempos2 = []
@@ -182,7 +183,7 @@ for tipo in ['c', 'q']:
             tiemp = 0
             envio = 0
             while not flag:
-                t += 1 #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                t += 1 
                 t1 += 1
                 all_edges = [e for e in net1.edges]
                 paquetes_ruta = paquetes_en_ruta(caminitos, all_edges[i])
@@ -191,8 +192,8 @@ for tipo in ['c', 'q']:
                 #print("Rutas de cada paquete:", caminitos)
                 #print("Paquetes que disputan:", paquetes_ruta)
                 if paquetes_ruta == []:
-                    t1 -= 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-                    t2 += 1  #hojaldreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                    t1 -= 1  
+                    t2 += 1  
                     i += 1
                 else:
                     i = 0
@@ -241,35 +242,69 @@ edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 nx.draw(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 
-fig, axs = plt.subplots(2, 2,figsize=(18,18))
+fig, axs = plt.subplots(2, 3,figsize=(30,20))
 
 axs[0, 0].set_title("Cost of classical and quantum protocol \n depending on the number of packages ({} nodes)".format(n1))
-axs[0, 0].plot(n2_array,costes_totales[0],'blue', label = 'Classical', marker='o')
-axs[0, 0].plot(n2_array,costes_totales[1],'red', label = 'Quantum', marker='o')
-#axs[0, 0].set_xlabel('Number of packages')
+axs[0, 0].plot(n2_array,costes_totales[0],'b', label = 'Classical (p = 0.00)', marker='o')
+axs[0, 0].plot(n2_array,costes_totales[1],'g', label = 'Classical (p = 0.25)', marker='o')
+axs[0, 0].plot(n2_array,costes_totales[2],'c', label = 'Classical (p = 0.50)', marker='o')
+axs[0, 0].plot(n2_array,costes_totales[3],'m', label = 'Classical (p = 0.75)', marker='o')
+axs[0, 0].plot(n2_array,costes_totales[4],'y', label = 'Classical (p = 0.90)', marker='o')
+axs[0, 0].plot(n2_array,costes_totales[5],'r', label = 'Quantum', marker='o')
 axs[0, 0].set_ylabel('Cost')
 
-axs[0, 1].set_title("Total number of attempts to connect the source \nto the destination of the packets ({} nodes)".format(n1))
-axs[0, 1].plot(n2_array,tiempos_totales[0],'blue', label = 'Classical', marker='o')
-axs[0, 1].plot(n2_array,tiempos_totales[1],'red', label = 'Quantum', marker='o')
-#axs[0, 1].set_xlabel('Number of packages')
-axs[0, 1].set_ylabel('Times')
+axs[0, 1].set_title("(Cost * Attemps) \n of classical and quantum protocol")
+axs[0, 1].plot(n2_array,np.array(costes_totales[0]) * np.array(tiempos_totales[0]),'b', label = 'Classical (p = 0.00)', marker='o')
+axs[0, 1].plot(n2_array,np.array(costes_totales[1]) * np.array(tiempos_totales[1]),'g', label = 'Classical (p = 0.25)', marker='o')
+axs[0, 1].plot(n2_array,np.array(costes_totales[2]) * np.array(tiempos_totales[2]),'c', label = 'Classical (p = 0.50)', marker='o')
+axs[0, 1].plot(n2_array,np.array(costes_totales[3]) * np.array(tiempos_totales[3]),'m', label = 'Classical (p = 0.75)', marker='o')
+axs[0, 1].plot(n2_array,np.array(costes_totales[4]) * np.array(tiempos_totales[4]),'y', label = 'Classical (p = 0.90)', marker='o')
+axs[0, 1].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales[5]),'r', label = 'Quantum', marker='o')
+axs[0, 1].set_ylabel('Cost')
 
-axs[1, 0].set_title("Number of attempts (games) to connect.")
-axs[1, 0].plot(n2_array,tiempos_totales1[0],'blue', label = 'Classical', marker='o')
-axs[1, 0].plot(n2_array,tiempos_totales1[1],'red', label = 'Quantum', marker='o')
+axs[0, 2].set_title("(Cost * Games) \n of classical and quantum protocol")
+axs[0, 2].plot(n2_array,np.array(costes_totales[0]) * np.array(tiempos_totales1[0]),'b', label = 'Classical (p = 0.00)', marker='o')
+axs[0, 2].plot(n2_array,np.array(costes_totales[1]) * np.array(tiempos_totales1[1]),'g', label = 'Classical (p = 0.25)', marker='o')
+axs[0, 2].plot(n2_array,np.array(costes_totales[2]) * np.array(tiempos_totales1[2]),'c', label = 'Classical (p = 0.50)', marker='o')
+axs[0, 2].plot(n2_array,np.array(costes_totales[3]) * np.array(tiempos_totales1[3]),'m', label = 'Classical (p = 0.75)', marker='o')
+axs[0, 2].plot(n2_array,np.array(costes_totales[4]) * np.array(tiempos_totales1[4]),'y', label = 'Classical (p = 0.90)', marker='o')
+axs[0, 2].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales1[5]),'r', label = 'Quantum', marker='o')
+axs[0, 2].set_ylabel('Cost')
+
+axs[1, 0].set_title("Number of attempts (empty) to connect.")
+axs[1, 0].plot(n2_array,tiempos_totales2[0],'b', label = 'Classical (p = 0.00)', marker='o')
+axs[1, 0].plot(n2_array,tiempos_totales2[1],'g', label = 'Classical (p = 0.25)', marker='o')
+axs[1, 0].plot(n2_array,tiempos_totales2[2],'c', label = 'Classical (p = 0.50)', marker='o')
+axs[1, 0].plot(n2_array,tiempos_totales2[3],'m', label = 'Classical (p = 0.75)', marker='o')
+axs[1, 0].plot(n2_array,tiempos_totales2[4],'y', label = 'Classical (p = 0.90)', marker='o')
+axs[1, 0].plot(n2_array,tiempos_totales2[5],'r', label = 'Quantum', marker='o')
 axs[1, 0].set_xlabel('Number of packages')
 axs[1, 0].set_ylabel('Times')
 
-axs[1, 1].set_title("Number of attempts (empty) to connect.")
-axs[1, 1].plot(n2_array,tiempos_totales2[0],'blue', label = 'Classical', marker='o')
-axs[1, 1].plot(n2_array,tiempos_totales2[1],'red', label = 'Quantum', marker='o')
-axs[1, 1].set_xlabel('Number of packages')
+axs[1, 1].set_title("Total number of attempts to connect")
+axs[1, 1].plot(n2_array,tiempos_totales[0],'b', label = 'Classical (p = 0.00)', marker='o')
+axs[1, 1].plot(n2_array,tiempos_totales[1],'g', label = 'Classical (p = 0.25)', marker='o')
+axs[1, 1].plot(n2_array,tiempos_totales[2],'c', label = 'Classical (p = 0.50)', marker='o')
+axs[1, 1].plot(n2_array,tiempos_totales[3],'m', label = 'Classical (p = 0.75)', marker='o')
+axs[1, 1].plot(n2_array,tiempos_totales[4],'y', label = 'Classical (p = 0.90)', marker='o')
+axs[1, 1].plot(n2_array,tiempos_totales[5],'r', label = 'Quantum', marker='o')
 axs[1, 1].set_ylabel('Times')
+
+axs[1, 2].set_title("Number of attempts (games) to connect.")
+axs[1, 2].plot(n2_array,tiempos_totales1[0],'b', label = 'Classical (p = 0.00)', marker='o')
+axs[1, 2].plot(n2_array,tiempos_totales1[1],'g', label = 'Classical (p = 0.25)', marker='o')
+axs[1, 2].plot(n2_array,tiempos_totales1[2],'c', label = 'Classical (p = 0.50)', marker='o')
+axs[1, 2].plot(n2_array,tiempos_totales1[3],'m', label = 'Classical (p = 0.75)', marker='o')
+axs[1, 2].plot(n2_array,tiempos_totales1[4],'y', label = 'Classical (p = 0.90)', marker='o')
+axs[1, 2].plot(n2_array,tiempos_totales1[5],'r', label = 'Quantum', marker='o')
+axs[1, 2].set_xlabel('Number of packages')
+axs[1, 2].set_ylabel('Times')
 
 axs[0, 0].legend()
 axs[0, 1].legend()
+axs[0, 2].legend()
 axs[1, 0].legend()
 axs[1, 1].legend()
+axs[1, 2].legend()
 
 plt.show()
