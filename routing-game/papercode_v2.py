@@ -146,7 +146,7 @@ def juego(lista, tipo):
 n1 = 20                                                                                         # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 1                                                                                          # cantidad de iteraciones
+n4 = 50                                                                                         # cantidad de iteraciones
 p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
 
 tiempos_totales = []
@@ -213,7 +213,7 @@ for tipo in p1:
             except ZeroDivisionError:
                 temp = 2*n3            
             if ((p+1)%(tests/2) == 0):
-                print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, tiemp, envio, temp))
+                print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, int(tiemp), envio, temp))
             coste += temp   
         t = t / tests
         t1 = t1 / tests
@@ -231,6 +231,8 @@ for tipo in p1:
 
 print(crear_circuito(2))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
+
+"""
 for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
         net2[e[0]][e[1]]['weight'] *= 5
@@ -241,6 +243,8 @@ edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 #nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 nx.draw(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
+"""
+
 
 fig, axs = plt.subplots(2, 3,figsize=(30,20))
 
@@ -300,11 +304,11 @@ axs[1, 2].plot(n2_array,tiempos_totales1[5],'r', label = 'Quantum', marker='o')
 axs[1, 2].set_xlabel('Number of packages')
 #axs[1, 2].set_ylabel('Times')
 
-axs[0, 0].legend(bbox_to_anchor=(0.0, 1.0, 0.5, 0.5))
-axs[0, 1].legend()
-axs[0, 2].legend()
-axs[1, 0].legend()
-axs[1, 1].legend()
-axs[1, 2].legend()
+axs[0, 0].legend(loc='upper left')
+#axs[0, 1].legend()
+#axs[0, 2].legend()
+axs[1, 0].legend(loc='upper right')
+#axs[1, 1].legend()
+#axs[1, 2].legend()
 
 plt.show()
