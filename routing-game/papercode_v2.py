@@ -62,7 +62,7 @@ def opciones_clas(n):
         x = [a]
         return np.random.choice(x)
     elif n == 2:
-        p1 = 0
+        p1 = 0.9
         a0 = {'00': 1}
         a1 = {'01': 1}
         a2 = {'10': 1}
@@ -143,10 +143,10 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 10                                                                                         # cantidad de ciudades
+n1 = 20                                                                                         # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 5                                                                                         # cantidad de iteraciones
+n4 = 25                                                                                         # cantidad de iteraciones
 
 tiempos_totales = []
 tiempos_totales1 = []
