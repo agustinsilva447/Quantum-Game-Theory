@@ -33,6 +33,8 @@ def generar_paquetes(n1,n2):
         colores.append('#{:0>6}'.format(color))    
     return moves, colores
 
+
+
 def caminos(net1, moves):
     caminitos = []
     i = 0
@@ -145,10 +147,11 @@ def juego(lista, tipo):
 
 n1 = 20                                                                                         # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
-n2_array = [200]
+#n2_array = [200]
 n3 = 2                                                                                          # distancia máxima
-n4 = 50                                                                                         # cantidad de iteraciones
-p1 = [0, 0.25, 0.5, 0.75, 0.9] #falta quantum                                                   # probabilidad de ceder
+n4 = 2                                                                                          # cantidad de iteraciones
+#p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
+p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -249,106 +252,83 @@ plt.show()
 """
 """
 
+c = ['b', 'g', 'c', 'm', 'y', 'r']
+
 fig, axs = plt.subplots(1, 2, figsize=(20,10))
 
 axs[0].set_title("Cost vs number of packages ({} nodes)".format(n1))
-axs[0].plot(n2_array,costes_totales[0],'b', label = 'Classical (p = 0.00)', marker='.')
-axs[0].plot(n2_array,costes_totales[1],'g', label = 'Classical (p = 0.25)', marker='.')
-axs[0].plot(n2_array,costes_totales[2],'c', label = 'Classical (p = 0.50)', marker='.')
-axs[0].plot(n2_array,costes_totales[3],'m', label = 'Classical (p = 0.75)', marker='.')
-axs[0].plot(n2_array,costes_totales[4],'y', label = 'Classical (p = 0.90)', marker='.')
+axs[1].set_title("Number of attempts (games) to connect.")
+
+for x,y in enumerate(p1):
+    axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+    axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+    
 axs[0].set_xlabel('Number of packages')
 axs[0].set_ylabel('Cost')
-
-axs[1].set_title("Number of attempts (games) to connect.")
-axs[1].plot(n2_array,tiempos_totales1[0],'b', label = 'Classical (p = 0.00)', marker='.')
-axs[1].plot(n2_array,tiempos_totales1[1],'g', label = 'Classical (p = 0.25)', marker='.')
-axs[1].plot(n2_array,tiempos_totales1[2],'c', label = 'Classical (p = 0.50)', marker='.')
-axs[1].plot(n2_array,tiempos_totales1[3],'m', label = 'Classical (p = 0.75)', marker='.')
-axs[1].plot(n2_array,tiempos_totales1[4],'y', label = 'Classical (p = 0.90)', marker='.')
 axs[1].set_xlabel('Number of packages')
 axs[1].set_ylabel('Times')
-
 axs[0].legend()
 axs[1].legend()
+
 plt.show()
 
 """
-"""
+
+c = ['b', 'g', 'c', 'm', 'y', 'r']
 
 fig, axs = plt.subplots(2, 3,figsize=(30,20))
 
 axs[0, 0].set_title("Cost vs number of packages ({} nodes)".format(n1))
-axs[0, 0].plot(n2_array,costes_totales[0],'b', label = 'Classical (p = 0.00)', marker='.')
-axs[0, 0].plot(n2_array,costes_totales[1],'g', label = 'Classical (p = 0.25)', marker='.')
-axs[0, 0].plot(n2_array,costes_totales[2],'c', label = 'Classical (p = 0.50)', marker='.')
-axs[0, 0].plot(n2_array,costes_totales[3],'m', label = 'Classical (p = 0.75)', marker='.')
-axs[0, 0].plot(n2_array,costes_totales[4],'y', label = 'Classical (p = 0.90)', marker='.')
-axs[0, 0].plot(n2_array,costes_totales[5],'r', label = 'Quantum', marker='.')
-axs[0, 0].set_ylabel('Cost')
-
 axs[0, 1].set_title("(Cost * Total Attemps)")
-axs[0, 1].plot(n2_array,np.array(costes_totales[0]) * np.array(tiempos_totales[0]),'b', label = 'Classical (p = 0.00)', marker='.')
-axs[0, 1].plot(n2_array,np.array(costes_totales[1]) * np.array(tiempos_totales[1]),'g', label = 'Classical (p = 0.25)', marker='.')
-axs[0, 1].plot(n2_array,np.array(costes_totales[2]) * np.array(tiempos_totales[2]),'c', label = 'Classical (p = 0.50)', marker='.')
-axs[0, 1].plot(n2_array,np.array(costes_totales[3]) * np.array(tiempos_totales[3]),'m', label = 'Classical (p = 0.75)', marker='.')
-axs[0, 1].plot(n2_array,np.array(costes_totales[4]) * np.array(tiempos_totales[4]),'y', label = 'Classical (p = 0.90)', marker='.')
-axs[0, 1].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales[5]),'r', label = 'Quantum', marker='.')
-#axs[0, 1].set_ylabel('Cost')
-
 axs[0, 2].set_title("(Cost * Games Attemps)")
-axs[0, 2].plot(n2_array,np.array(costes_totales[0]) * np.array(tiempos_totales1[0]),'b', label = 'Classical (p = 0.00)', marker='.')
-axs[0, 2].plot(n2_array,np.array(costes_totales[1]) * np.array(tiempos_totales1[1]),'g', label = 'Classical (p = 0.25)', marker='.')
-axs[0, 2].plot(n2_array,np.array(costes_totales[2]) * np.array(tiempos_totales1[2]),'c', label = 'Classical (p = 0.50)', marker='.')
-axs[0, 2].plot(n2_array,np.array(costes_totales[3]) * np.array(tiempos_totales1[3]),'m', label = 'Classical (p = 0.75)', marker='.')
-axs[0, 2].plot(n2_array,np.array(costes_totales[4]) * np.array(tiempos_totales1[4]),'y', label = 'Classical (p = 0.90)', marker='.')
-axs[0, 2].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales1[5]),'r', label = 'Quantum', marker='.')
-#axs[0, 2].set_ylabel('Cost')
-
 axs[1, 0].set_title("Number of attempts (empty) to connect.")
-axs[1, 0].plot(n2_array,tiempos_totales2[0],'b', label = 'Classical (p = 0.00)', marker='.')
-axs[1, 0].plot(n2_array,tiempos_totales2[1],'g', label = 'Classical (p = 0.25)', marker='.')
-axs[1, 0].plot(n2_array,tiempos_totales2[2],'c', label = 'Classical (p = 0.50)', marker='.')
-axs[1, 0].plot(n2_array,tiempos_totales2[3],'m', label = 'Classical (p = 0.75)', marker='.')
-axs[1, 0].plot(n2_array,tiempos_totales2[4],'y', label = 'Classical (p = 0.90)', marker='.')
-axs[1, 0].plot(n2_array,tiempos_totales2[5],'r', label = 'Quantum', marker='.')
+axs[1, 1].set_title("Total number of attempts to connect")
+axs[1, 2].set_title("Number of attempts (games) to connect.")
+
+for x,y in enumerate(p1):
+    if y == 'q':
+        axs[0, 0].plot(n2_array,costes_totales[5],'r', label = 'Quantum', marker='.')
+        axs[0, 1].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales[5]),'r', label = 'Quantum', marker='.')
+        axs[0, 2].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales1[5]),'r', label = 'Quantum', marker='.')
+        axs[1, 0].plot(n2_array,tiempos_totales2[5],'r', label = 'Quantum', marker='.')
+        axs[1, 1].plot(n2_array,tiempos_totales[5],'r', label = 'Quantum', marker='.')
+        axs[1, 2].plot(n2_array,tiempos_totales1[5],'r', label = 'Quantum', marker='.')
+    else:
+        axs[0, 0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')    
+        axs[0, 1].plot(n2_array,np.array(costes_totales[x]) * np.array(tiempos_totales[x]), c[x], label = 'Classical (p = {})'.format(y), marker='.')
+        axs[0, 2].plot(n2_array,np.array(costes_totales[x]) * np.array(tiempos_totales1[x]), c[x], label = 'Classical (p = {})'.format(y), marker='.')
+        axs[1, 0].plot(n2_array,tiempos_totales2[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+        axs[1, 1].plot(n2_array,tiempos_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+        axs[1, 2].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+
 axs[1, 0].set_xlabel('Number of packages')
+axs[1, 1].set_xlabel('Number of packages')
+axs[1, 2].set_xlabel('Number of packages')
+axs[0, 0].set_ylabel('Cost')
 axs[1, 0].set_ylabel('Times')
 
-axs[1, 1].set_title("Total number of attempts to connect")
-axs[1, 1].plot(n2_array,tiempos_totales[0],'b', label = 'Classical (p = 0.00)', marker='.')
-axs[1, 1].plot(n2_array,tiempos_totales[1],'g', label = 'Classical (p = 0.25)', marker='.')
-axs[1, 1].plot(n2_array,tiempos_totales[2],'c', label = 'Classical (p = 0.50)', marker='.')
-axs[1, 1].plot(n2_array,tiempos_totales[3],'m', label = 'Classical (p = 0.75)', marker='.')
-axs[1, 1].plot(n2_array,tiempos_totales[4],'y', label = 'Classical (p = 0.90)', marker='.')
-axs[1, 1].plot(n2_array,tiempos_totales[5],'r', label = 'Quantum', marker='.')
-#axs[1, 1].set_ylabel('Times')
-
-axs[1, 2].set_title("Number of attempts (games) to connect.")
-axs[1, 2].plot(n2_array,tiempos_totales1[0],'b', label = 'Classical (p = 0.00)', marker='.')
-axs[1, 2].plot(n2_array,tiempos_totales1[1],'g', label = 'Classical (p = 0.25)', marker='.')
-axs[1, 2].plot(n2_array,tiempos_totales1[2],'c', label = 'Classical (p = 0.50)', marker='.')
-axs[1, 2].plot(n2_array,tiempos_totales1[3],'m', label = 'Classical (p = 0.75)', marker='.')
-axs[1, 2].plot(n2_array,tiempos_totales1[4],'y', label = 'Classical (p = 0.90)', marker='.')
-axs[1, 2].plot(n2_array,tiempos_totales1[5],'r', label = 'Quantum', marker='.')
-axs[1, 2].set_xlabel('Number of packages')
-#axs[1, 2].set_ylabel('Times')
-
 axs[0, 0].legend(loc='upper left')
-#axs[0, 1].legend()
-#axs[0, 2].legend()
 axs[1, 0].legend(loc='upper right')
-#axs[1, 1].legend()
-#axs[1, 2].legend()
 
 plt.show()
 
 """
 
-plt.plot(costes_totales[0][-1], tiempos_totales1[0][-1],'b', label = 'Classical (p = 0.00)', marker='o')
-plt.plot(costes_totales[1][-1], tiempos_totales1[1][-1],'g', label = 'Classical (p = 0.25)', marker='o')
-plt.plot(costes_totales[2][-1], tiempos_totales1[2][-1],'c', label = 'Classical (p = 0.50)', marker='o')
-plt.plot(costes_totales[3][-1], tiempos_totales1[3][-1],'m', label = 'Classical (p = 0.75)', marker='o')
-plt.plot(costes_totales[4][-1], tiempos_totales1[4][-1],'y', label = 'Classical (p = 0.90)', marker='o')
+costs_list = []
+times_list = []
+plt.title("Trade-off grapf for 20 nodes")
+for x,y in enumerate(p1):
+    if y == 'q':
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
+    else:
+        colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(y), marker='o')
+        costs_list.append(costes_totales[x][-1])
+        times_list.append(tiempos_totales1[x][-1])
+plt.plot(costs_list, times_list, 'b')
+plt.xlabel('Cost per package')
+plt.ylabel('Connection time')
 plt.legend()
 plt.show()
+
+"""
