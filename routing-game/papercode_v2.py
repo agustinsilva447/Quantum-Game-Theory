@@ -149,7 +149,7 @@ n1 = 20                                                                         
 n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 #n2_array = [200]                                                                               # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 2                                                                                          # cantidad de iteraciones
+n4 = 50                                                                                          # cantidad de iteraciones
 #p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
 p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
 
@@ -250,7 +250,6 @@ nx.draw(net2,node_color='red',edge_color = edge_color_list, with_labels = True, 
 plt.show() 
 
 """
-"""
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 
@@ -287,12 +286,12 @@ axs[1, 2].set_title("Number of attempts (games) to connect.")
 
 for x,y in enumerate(p1):
     if y == 'q':
-        axs[0, 0].plot(n2_array,costes_totales[5], c[x], label = 'Quantum', marker='.')
-        axs[0, 1].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales[5]), c[x], label = 'Quantum', marker='.')
-        axs[0, 2].plot(n2_array,np.array(costes_totales[5]) * np.array(tiempos_totales1[5]), c[x], label = 'Quantum', marker='.')
-        axs[1, 0].plot(n2_array,tiempos_totales2[5], c[x], label = 'Quantum', marker='.')
-        axs[1, 1].plot(n2_array,tiempos_totales[5], c[x], label = 'Quantum', marker='.')
-        axs[1, 2].plot(n2_array,tiempos_totales1[5], c[x], label = 'Quantum', marker='.')
+        axs[0, 0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum', marker='.')
+        axs[0, 1].plot(n2_array,np.array(costes_totales[x]) * np.array(tiempos_totales[5]), c[x], label = 'Quantum', marker='.')
+        axs[0, 2].plot(n2_array,np.array(costes_totales[x]) * np.array(tiempos_totales1[5]), c[x], label = 'Quantum', marker='.')
+        axs[1, 0].plot(n2_array,tiempos_totales2[x], c[x], label = 'Quantum', marker='.')
+        axs[1, 1].plot(n2_array,tiempos_totales[x], c[x], label = 'Quantum', marker='.')
+        axs[1, 2].plot(n2_array,tiempos_totales1[x], c[x], label = 'Quantum', marker='.')
     else:
         axs[0, 0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')    
         axs[0, 1].plot(n2_array,np.array(costes_totales[x]) * np.array(tiempos_totales[x]), c[x], label = 'Classical (p = {})'.format(y), marker='.')
@@ -312,6 +311,7 @@ axs[1, 0].legend(loc='upper right')
 
 plt.show()
 
+"""
 """
 
 costs_list = []
