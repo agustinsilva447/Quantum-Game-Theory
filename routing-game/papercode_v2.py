@@ -146,12 +146,13 @@ def juego(lista, tipo):
     return lista
 
 n1 = 20                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
-#n2_array = [200]                                                                               # cantidad de paquetes
+#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
+n2_array = [200]                                                                                # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 50                                                                                          # cantidad de iteraciones
+n4 = 1                                                                                          # cantidad de iteraciones
 #p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
-p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
+#p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                            # probabilidad de ceder
+p1 = ['q']
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -237,7 +238,7 @@ for tipo in p1:
 print(crear_circuito(2))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
 
-"""
+
 for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
         net2[e[0]][e[1]]['weight'] *= 5
@@ -271,6 +272,7 @@ axs[1].legend()
 
 plt.show()
 
+"""
 """
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
