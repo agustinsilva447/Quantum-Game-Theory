@@ -145,7 +145,7 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 20                                                                                         # cantidad de ciudades
+n1 = 10                                                                                         # cantidad de ciudades
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
 n2_array = [200]                                                                                # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
@@ -247,7 +247,7 @@ for e in net2.edges():                         #sirve para n3 = 2
 edge_color_list = [net2[e[0]][e[1]]['color'] for e in net2.edges()]
 edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 #nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
-nx.draw(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
+nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 
 """
