@@ -145,14 +145,14 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 10                                                                                         # cantidad de ciudades
-#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
-n2_array = [200]                                                                                # cantidad de paquetes
+n1 = 20                                                                                         # cantidad de ciudades
+n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
+#n2_array = [200]                                                                               # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 1                                                                                          # cantidad de iteraciones
+n4 = 5                                                                                          # cantidad de iteraciones
 #p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
-#p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                            # probabilidad de ceder
-p1 = ['q']
+p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
+#p1 = ['q']
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -238,6 +238,7 @@ for tipo in p1:
 print(crear_circuito(2))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
 
+"""
 
 for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
@@ -260,8 +261,12 @@ axs[0].set_title("Cost vs number of packages ({} nodes)".format(n1))
 axs[1].set_title("Number of attempts (games) to connect.")
 
 for x,y in enumerate(p1):
-    axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
-    axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+    if y == 'q':
+        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum (p = {})'.format(y), marker='.')
+        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Quantum (p = {})'.format(y), marker='.')
+    else:
+        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
     
 axs[0].set_xlabel('Number of packages')
 axs[0].set_ylabel('Cost')
@@ -272,7 +277,6 @@ axs[1].legend()
 
 plt.show()
 
-"""
 """
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -318,7 +322,7 @@ plt.show()
 
 costs_list = []
 times_list = []
-plt.title("Trade-off grapf for 20 nodes")
+plt.title("Trade-off grapf for {} nodes".format(n1))
 for x,y in enumerate(p1):
     if y == 'q':
         plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
@@ -332,5 +336,4 @@ plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
 plt.legend()
 plt.show()
-
 """
