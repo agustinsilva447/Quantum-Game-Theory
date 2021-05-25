@@ -146,12 +146,12 @@ def juego(lista, tipo):
     return lista
 
 n1 = 20                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
-#n2_array = [200]                                                                               # cantidad de paquetes
+#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
+n2_array = [200]                                                                               # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 50                                                                                         # cantidad de iteraciones
+n4 = 10                                                                                         # cantidad de iteraciones
 #p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
-p1 = [0, 0.25, 0.5, 0.75, 0.9, 'q']                                                             # probabilidad de ceder
+p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 'q']                                                             # probabilidad de ceder
 #p1 = ['q']
 
 tiempos_totales = []
@@ -252,6 +252,7 @@ nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_l
 plt.show() 
 
 """
+"""
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 
@@ -277,6 +278,7 @@ axs[1].legend()
 
 plt.show()
 
+"""
 """
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -318,7 +320,6 @@ axs[1, 0].legend(loc='upper right')
 plt.show()
 
 """
-"""
 
 costs_list = []
 times_list = []
@@ -336,4 +337,3 @@ plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
 plt.legend()
 plt.show()
-"""
