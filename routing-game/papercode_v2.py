@@ -93,24 +93,49 @@ def crear_circuito(n):
         X_f = np.kron(X_f, X)
     J = Operator(1 / np.sqrt(2) * (I_f + 1j * X_f))    
     J_dg = J.adjoint()
+    circ = QuantumCircuit(n,n)
+    circ.append(J, range(n))
     if n==1:
         dx = np.pi
         dy = 0
         dz = 0
+
+        circ.append(RXGate(dx),[0])
+        circ.append(RYGate(dy),[0])
+        circ.append(RZGate(dz),[0])
     elif n==2:    
-        dx = np.pi/2
-        dy = np.pi/4
-        dz = 0
+
+        # Pareto sí, Nash no y Pura
+        #dx0 = np.pi/2
+        #dy0 = np.pi/4
+        #dz0 = 0      
+        #dx1 = np.pi/2
+        #dy1 = np.pi/4
+        #dz1 = 0
+
+        # Pareto sí, Nash sí y Mixta
+        dx0 = np.pi/2
+        dy0 = np.pi/4
+        dz0 = np.random.choice([0, np.pi])
+        dx1 = np.pi/2
+        dy1 = np.pi/4
+        dz1 = np.random.choice([np.pi/2, 3*np.pi/2])     
+
+        circ.append(RXGate(dx0),[0])
+        circ.append(RYGate(dy0),[0])
+        circ.append(RZGate(dz0),[0])        
+        circ.append(RXGate(dx1),[1])
+        circ.append(RYGate(dy1),[1])
+        circ.append(RZGate(dz1),[1])
+
     elif n==4:
         dx = np.pi/2
         dy = 3 * np.pi/8
-        dz = 3 * np.pi/4
-    circ = QuantumCircuit(n,n)
-    circ.append(J, range(n))
-    for q in range(n):
-        circ.append(RXGate(dx),[q])
-        circ.append(RYGate(dy),[q])
-        circ.append(RZGate(dz),[q])            
+        dz = 3 * np.pi/4    
+        for q in range(n):
+            circ.append(RXGate(dx),[q])
+            circ.append(RYGate(dy),[q])
+            circ.append(RZGate(dz),[q])         
     circ.append(J_dg, range(n))
     circ.measure(range(n), range(n))  
     return circ
@@ -124,7 +149,6 @@ def juego(lista, tipo):
                 jug = 2 - int(m == j+int(np.ceil(m/2)))
                         
                 if tipo == 'q':
-                    """
                     measurement = opciones_cuan(jug)
                     """
                     # esto es para correr el circuito en el simulador de IBM
@@ -134,6 +158,7 @@ def juego(lista, tipo):
                     #result = job.result()
                     #measurement = result.get_counts(circ)
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
+                    """
                 else:
                     measurement = opciones_clas(jug, tipo)
 
@@ -144,11 +169,11 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 20                                                                                         # cantidad de ciudades
+n1 = 5                                                                                         # cantidad de ciudades
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
-n2_array = [200]                                                                               # cantidad de paquetes
+n2_array = [5 * n1]                                                                               # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 1                                                                                         # cantidad de iteraciones
+n4 = 100                                                                                         # cantidad de iteraciones
 #p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
 p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 'q']                                                             # probabilidad de ceder
 #p1 = ['q']
