@@ -163,18 +163,19 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 10                                                                                         # cantidad de ciudades
+n1 = 20                                                                                         # cantidad de ciudades
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
 n2_array = [5 * n1]                                                                             # cantidad de paquetes
+n2_array = 200
 n3 = 2                                                                                          # distancia máxima
-n4 = 1                                                                                          # cantidad de iteraciones
+n4 = 100                                                                                        # cantidad de iteraciones
 
 p1 = []
 probas = np.arange(0,1,0.1)                                                                     # probabilidades de ceder
 for _p in probas:
     p1.append([_p])
 
-angulos = np.arange(0, 2 * np.pi, np.pi/2)                                                      # rotaciones en x,y,z
+angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
     for _y in angulos:
         for _z in angulos:
