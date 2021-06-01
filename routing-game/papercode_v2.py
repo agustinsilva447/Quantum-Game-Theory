@@ -79,7 +79,7 @@ def opciones_cuan(n):
         x = [a1, a2]
     return np.random.choice(x)     
 
-def crear_circuito(n):
+def crear_circuito(n, tipo):
     I_f = np.array([[1, 0],
                   [0, 1]]) 
     I = np.array([[1, 0],
@@ -99,43 +99,33 @@ def crear_circuito(n):
         dx = np.pi
         dy = 0
         dz = 0
-
-        circ.append(RXGate(dx),[0])
-        circ.append(RYGate(dy),[0])
-        circ.append(RZGate(dz),[0])
     elif n==2:    
-
         # Pareto sí, Nash no y Pura
-        #dx0 = np.pi/2
-        #dy0 = np.pi/4
-        #dz0 = 0      
-        #dx1 = np.pi/2
-        #dy1 = np.pi/4
-        #dz1 = 0
+        #dx = np.pi/2
+        #dy = np.pi/4
+        #dz = 0      
 
         # Pareto sí, Nash sí y Mixta
-        dx0 = np.pi/2
-        dy0 = np.pi/4
-        dz0 = np.random.choice([0, np.pi])
-        dx1 = np.pi/2
-        dy1 = np.pi/4
-        dz1 = np.random.choice([np.pi/2, 3*np.pi/2])     
+        #dx = np.pi/2
+        #dy = np.pi/4
+        #dz = np.random.choice([0, np.pi/2, np.pi, 3*np.pi/2])
 
-        circ.append(RXGate(dx0),[0])
-        circ.append(RYGate(dy0),[0])
-        circ.append(RZGate(dz0),[0])        
-        circ.append(RXGate(dx1),[1])
-        circ.append(RYGate(dy1),[1])
-        circ.append(RZGate(dz1),[1])
+        # Barrido
+        dx = tipo[0]
+        dy = tipo[1]
+        dz = tipo[2]
 
+    """
     elif n==4:
         dx = np.pi/2
         dy = 3 * np.pi/8
         dz = 3 * np.pi/4    
-        for q in range(n):
-            circ.append(RXGate(dx),[q])
-            circ.append(RYGate(dy),[q])
-            circ.append(RZGate(dz),[q])         
+    """
+
+    for q in range(n):
+        circ.append(RXGate(dx),[q])
+        circ.append(RYGate(dy),[q])
+        circ.append(RZGate(dz),[q])         
     circ.append(J_dg, range(n))
     circ.measure(range(n), range(n))  
     return circ
@@ -148,19 +138,17 @@ def juego(lista, tipo):
             for j in range(int(np.ceil(m/2))):
                 jug = 2 - int(m == j+int(np.ceil(m/2)))
                         
-                if tipo == 'q':
+                if len(tipo) == 3:
                     """
+                    # esto es para simular el circuito en python
                     measurement = opciones_cuan(jug)
                     """
                     # esto es para correr el circuito en el simulador de IBM
-                    circ = crear_circuito(jug)
+                    circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
-                    #job = execute(circ, backend=backend, shots=1)
-                    #result = job.result()
-                    #measurement = result.get_counts(circ)
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
-                else:
-                    measurement = opciones_clas(jug, tipo)
+                if len(tipo) == 1:
+                    measurement = opciones_clas(jug, tipo[0])
 
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
@@ -169,14 +157,30 @@ def juego(lista, tipo):
             m = len(lista)         
     return lista
 
-n1 = 5                                                                                          # cantidad de ciudades
-#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
-n2_array = [5 * n1]                                                                               # cantidad de paquetes
+def checkear_nozero(check):
+    circ = crear_circuito(2, [_x,_y,_z])
+    backend = Aer.get_backend('qasm_simulator')
+    measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
+    return ['00'] != list(measurement.keys())
+
+n1 = 10                                                                                         # cantidad de ciudades
+#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
+n2_array = [5 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 10                                                                                         # cantidad de iteraciones
-#p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] #falta quantum                          # probabilidad de ceder
-p1 = [0, 0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 'q']                                                             # probabilidad de ceder
-#p1 = ['q']
+n4 = 1                                                                                          # cantidad de iteraciones
+
+p1 = []
+probas = np.arange(0,1,0.1)                                                                     # probabilidades de ceder
+for _p in probas:
+    p1.append([_p])
+
+angulos = np.arange(0, 2 * np.pi, np.pi/2)                                                      # rotaciones en x,y,z
+for _x in angulos:
+    for _y in angulos:
+        for _z in angulos:
+            check = [_x,_y,_z]
+            if checkear_nozero(check):
+                p1.append(check)
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -184,14 +188,14 @@ tiempos_totales2 = []
 costes_totales = []
 
 for tipo in p1:
-    if tipo == 'q':
+    if len(tipo) == 1:
+        version = "clásica"
+        tests = 10 * n4
+        print("RESULTADOS DEL JUEGO CLÁSICO (p = {}):".format(tipo))
+    if len(tipo) == 3:
         version = "cuántica"
         tests = n4
-        print("RESULTADOS DEL JUEGO CUÁNTICO:")
-    else:
-        version = "clásica"
-        tests = n4
-        print("RESULTADOS DEL JUEGO CLÁSICO (p = {}):".format(tipo))
+        print("RESULTADOS DEL JUEGO CUÁNTICO (q = {}):".format(tipo))
     tiempos = []
     tiempos1 = []
     tiempos2 = []
@@ -259,8 +263,10 @@ for tipo in p1:
     tiempos_totales2.append(tiempos2)
     costes_totales.append(costes)    
 
-print(crear_circuito(2))
+print(crear_circuito(2,tipo))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
+
+"""
 
 for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
@@ -274,6 +280,9 @@ nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_l
 plt.show() 
 
 """
+"""
+
+# funcion para 5 probabilidades y 1 cuántica
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 
@@ -301,6 +310,8 @@ plt.show()
 
 """
 """
+
+# funcion para 5 probabilidades y 1 cuántica
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 
@@ -342,19 +353,28 @@ plt.show()
 
 """
 
-costs_list = []
-times_list = []
+costs_list_c = []
+times_list_c = []
+costs_list_q = []
+times_list_q = []
 plt.title("Trade-off grapf for {} nodes".format(n1))
 for x,y in enumerate(p1):
-    if y == 'q':
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
-    else:
+    if len(y) == 1:
         colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(y), marker='o')
-        costs_list.append(costes_totales[x][-1])
-        times_list.append(tiempos_totales1[x][-1])
-plt.plot(costs_list, times_list, 'b')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(y[0]), marker='o')
+        costs_list_c.append(costes_totales[x][-1])
+        times_list_c.append(tiempos_totales1[x][-1])
+    if len(y) == 3:
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
+        costs_list_q.append(costes_totales[x][-1])
+        times_list_q.append(tiempos_totales1[x][-1])        
+plt.plot(costs_list_c, times_list_c, 'b')
+#plt.plot(costs_list_q, times_list_q, 'r')
+
 plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
-plt.legend()
+
+handles, labels = plt.gca().get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys())
 plt.show()
