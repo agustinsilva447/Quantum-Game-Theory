@@ -163,12 +163,11 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 20                                                                                         # cantidad de ciudades
+n1 = 5                                                                                          # cantidad de ciudades
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
-n2_array = [5 * n1]                                                                             # cantidad de paquetes
-n2_array = 200
+n2_array = [10 * n1]                                                                            # cantidad de paquetes
 n3 = 2                                                                                          # distancia máxima
-n4 = 100                                                                                        # cantidad de iteraciones
+n4 = 2                                                                                          # cantidad de iteraciones
 
 p1 = []
 probas = np.arange(0,1,0.1)                                                                     # probabilidades de ceder
@@ -191,10 +190,12 @@ costes_totales = []
 for tipo in p1:
     if len(tipo) == 1:
         version = "clásica"
+        version_2 = "p"
         tests = 10 * n4
         print("RESULTADOS DEL JUEGO CLÁSICO (p = {}):".format(tipo))
     if len(tipo) == 3:
         version = "cuántica"
+        version_2 = "[Rx, Ry, Rz]"
         tests = n4
         print("RESULTADOS DEL JUEGO CUÁNTICO (q = {}):".format(tipo))
     tiempos = []
@@ -258,7 +259,7 @@ for tipo in p1:
         tiempos2.append(t2)
         coste = coste / tests
         costes.append(coste)
-        print("{:0>3} - Versión {} (p = {}) para {} ciudades y {} paquetes. Coste = {}. Tiempo = {}\n".format(cant+1, version, tipo, n1, n2, coste, t))
+        print("{:0>3} - Versión {} ({} = {}) para {} ciudades y {} paquetes. Coste = {}. Tiempo = {}\n".format(cant+1, version, version_2, tipo, n1, n2, coste, t))
     tiempos_totales.append(tiempos)
     tiempos_totales1.append(tiempos1)
     tiempos_totales2.append(tiempos2)
@@ -354,26 +355,37 @@ plt.show()
 
 """
 
+max_x = 0
+max_y = 0
 costs_list_c = []
 times_list_c = []
 costs_list_q = []
 times_list_q = []
 plt.title("Trade-off grapf for {} nodes".format(n1))
-for x,y in enumerate(p1):
+
+#p1.reverse()
+for x,y in enumerate(p1): 
     if len(y) == 1:
         colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(y[0]), marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
+        if costes_totales[x][-1] > max_x:
+            max_x = costes_totales[x][-1]
+        if tiempos_totales1[x][-1] > max_y:
+            max_y = tiempos_totales1[x][-1] 
     if len(y) == 3:
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
         costs_list_q.append(costes_totales[x][-1])
-        times_list_q.append(tiempos_totales1[x][-1])        
+        times_list_q.append(tiempos_totales1[x][-1])  
+                
 plt.plot(costs_list_c, times_list_c, 'b')
 #plt.plot(costs_list_q, times_list_q, 'r')
 
 plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
+plt.xlim(0, 1.5 * max_x)
+plt.ylim(0, 1.5 * max_y)
 
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
