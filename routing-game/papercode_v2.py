@@ -100,17 +100,12 @@ def crear_circuito(n, tipo):
         dy = 0
         dz = 0
     elif n==2:    
-        # Pareto sí, Nash no y Pura
-        #dx = np.pi/2
-        #dy = np.pi/4
-        #dz = 0      
-
-        # Pareto sí, Nash sí y Mixta
+        # Pareto, Nash y Mixta
         #dx = np.pi/2
         #dy = np.pi/4
         #dz = np.random.choice([0, np.pi/2, np.pi, 3*np.pi/2])
 
-        # Barrido
+        # barrido
         dx = tipo[0]
         dy = tipo[1]
         dz = tipo[2]
@@ -163,17 +158,20 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 5                                                                                          # cantidad de ciudades
-#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))  # cantidad de paquetes
-n2_array = [10 * n1]                                                                            # cantidad de paquetes
-n3 = 2                                                                                          # distancia máxima
-n4 = 2                                                                                          # cantidad de iteraciones
+n1 = 20                                                                                          # cantidad de ciudades
+#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
+n2_array = [10 * n1]                                                                             # cantidad de paquetes
+n3 = 2                                                                                           # distancia máxima
+n4 = 25                                                                                          # cantidad de iteraciones
 
 p1 = []
 probas = np.arange(0,1,0.1)                                                                     # probabilidades de ceder
 for _p in probas:
     p1.append([_p])
 
+"""
+p1.append([np.pi/2, np.pi/4, 0]) # Pareto sí, Nash no y Pura
+"""
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
     for _y in angulos:
@@ -189,15 +187,14 @@ costes_totales = []
 
 for tipo in p1:
     if len(tipo) == 1:
-        version = "clásica"
+        version = "CLÁSICO"
         version_2 = "p"
-        tests = 10 * n4
-        print("RESULTADOS DEL JUEGO CLÁSICO (p = {}):".format(tipo))
+        tests = 2 * n4
     if len(tipo) == 3:
-        version = "cuántica"
+        version = "CUÁNTICO"
         version_2 = "[Rx, Ry, Rz]"
         tests = n4
-        print("RESULTADOS DEL JUEGO CUÁNTICO (q = {}):".format(tipo))
+    print("RESULTADOS DEL JUEGO {} ({} = {}):".format(version, version_2, tipo))
     tiempos = []
     tiempos1 = []
     tiempos2 = []
