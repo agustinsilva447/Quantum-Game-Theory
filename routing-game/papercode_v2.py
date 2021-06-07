@@ -381,8 +381,8 @@ plt.plot(costs_list_c, times_list_c, 'b')
 
 plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
-plt.xlim(0, 1.5 * max_x)
-plt.ylim(0, 1.5 * max_y)
+plt.xlim(right = max_x)
+plt.ylim(top = max_y)
 
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
