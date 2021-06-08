@@ -69,15 +69,19 @@ def opciones_clas(n, tipo):
         x = [a0, a1, a2, a3]
         return np.random.choice(x, p = [tipo*tipo, tipo*(1-tipo), (1-tipo)*tipo, (1-tipo)*(1-tipo)])
 
-def opciones_cuan(n):
+def opciones_cuan(n, tipo):
+    c = tipo[3]             # factor de coherencia -> \rho_{noisy}=c*\rho+(1-c)*\frac{I}{d}
     if n == 1:
         a = {'1': 1}
         x = [a]
+        return np.random.choice(x)
     elif n == 2:
+        a0 = {'00': 1}
         a1 = {'01': 1}
         a2 = {'10': 1}
-        x = [a1, a2]
-    return np.random.choice(x)     
+        a3 = {'11': 1}
+        x = [a0, a1, a2, a3]
+        return np.random.choice(x, p = [0.25 * (1 - c), 0.25 * (1 + c), 0.25 * (1 + c), 0.25 * (1 - c)])
 
 def crear_circuito(n, tipo):
     I_f = np.array([[1, 0],
@@ -133,10 +137,10 @@ def juego(lista, tipo):
             for j in range(int(np.ceil(m/2))):
                 jug = 2 - int(m == j+int(np.ceil(m/2)))
                         
-                if len(tipo) == 3:
+                if len(tipo) == 4:
                     """
                     # esto es para simular el circuito en python
-                    measurement = opciones_cuan(jug)
+                    measurement = opciones_cuan(jug, tipo)
                     """
                     # esto es para correr el circuito en el simulador de IBM
                     circ = crear_circuito(jug, tipo)
@@ -153,7 +157,7 @@ def juego(lista, tipo):
     return lista
 
 def checkear_nozero(check):
-    circ = crear_circuito(2, [_x,_y,_z])
+    circ = crear_circuito(2, check)
     backend = Aer.get_backend('qasm_simulator')
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
@@ -162,7 +166,7 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 25                                                                                          # cantidad de iteraciones
+n4 = 1                                                                                          # cantidad de iteraciones
 
 p1 = []
 probas = np.arange(0,1,0.1)                                                                     # probabilidades de ceder
@@ -170,13 +174,14 @@ for _p in probas:
     p1.append([_p])
 
 """
-p1.append([np.pi/2, np.pi/4, 0]) # Pareto sí, Nash no y Pura
+for c in np.arange(0,1.1,0.1):
+    p1.append([np.pi/2, np.pi/4, 0, c]) # Pareto sí, Nash no y Pura
 """
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
     for _y in angulos:
         for _z in angulos:
-            check = [_x,_y,_z]
+            check = [_x,_y,_z, 1]
             if checkear_nozero(check):
                 p1.append(check)
 
@@ -189,10 +194,10 @@ for tipo in p1:
     if len(tipo) == 1:
         version = "CLÁSICO"
         version_2 = "p"
-        tests = 2 * n4
-    if len(tipo) == 3:
+        tests = n4
+    if len(tipo) == 4:
         version = "CUÁNTICO"
-        version_2 = "[Rx, Ry, Rz]"
+        version_2 = "[Rx, Ry, Rz, c]"
         tests = n4
     print("RESULTADOS DEL JUEGO {} ({} = {}):".format(version, version_2, tipo))
     tiempos = []
@@ -262,11 +267,12 @@ for tipo in p1:
     tiempos_totales2.append(tiempos2)
     costes_totales.append(costes)    
 
+"""
 print(crear_circuito(2,tipo))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
-
 """
 
+"""
 for e in net2.edges():                         #sirve para n3 = 2
     if net2[e[0]][e[1]]['color']=='black':
         net2[e[0]][e[1]]['weight'] *= 5
@@ -277,19 +283,14 @@ edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 #nx.draw_circular(net2,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
-
-"""
 """
 
+"""
 # funcion para 5 probabilidades y 1 cuántica
-
 c = ['b', 'g', 'c', 'm', 'y', 'r']
-
 fig, axs = plt.subplots(1, 2, figsize=(20,10))
-
 axs[0].set_title("Cost vs number of packages ({} nodes)".format(n1))
 axs[1].set_title("Number of attempts (games) to connect.")
-
 for x,y in enumerate(p1):
     if y == 'q':
         axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum (p = {})'.format(y), marker='.')
@@ -297,32 +298,25 @@ for x,y in enumerate(p1):
     else:
         axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
         axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
-    
 axs[0].set_xlabel('Number of packages')
 axs[0].set_ylabel('Cost')
 axs[1].set_xlabel('Number of packages')
 axs[1].set_ylabel('Times')
 axs[0].legend()
 axs[1].legend()
-
 plt.show()
-
-"""
 """
 
+"""
 # funcion para 5 probabilidades y 1 cuántica
-
 c = ['b', 'g', 'c', 'm', 'y', 'r']
-
 fig, axs = plt.subplots(2, 3,figsize=(30,20))
-
 axs[0, 0].set_title("Cost vs number of packages ({} nodes)".format(n1))
 axs[0, 1].set_title("(Cost * Total Attemps)")
 axs[0, 2].set_title("(Cost * Games Attemps)")
 axs[1, 0].set_title("Number of attempts (empty) to connect.")
 axs[1, 1].set_title("Total number of attempts to connect")
 axs[1, 2].set_title("Number of attempts (games) to connect.")
-
 for x,y in enumerate(p1):
     if y == 'q':
         axs[0, 0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum', marker='.')
@@ -338,18 +332,14 @@ for x,y in enumerate(p1):
         axs[1, 0].plot(n2_array,tiempos_totales2[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
         axs[1, 1].plot(n2_array,tiempos_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
         axs[1, 2].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
-
 axs[1, 0].set_xlabel('Number of packages')
 axs[1, 1].set_xlabel('Number of packages')
 axs[1, 2].set_xlabel('Number of packages')
 axs[0, 0].set_ylabel('Cost')
 axs[1, 0].set_ylabel('Times')
-
 axs[0, 0].legend(loc='upper left')
 axs[1, 0].legend(loc='upper right')
-
 plt.show()
-
 """
 
 max_x = 0
@@ -359,31 +349,28 @@ times_list_c = []
 costs_list_q = []
 times_list_q = []
 plt.title("Trade-off grapf for {} nodes".format(n1))
-
 #p1.reverse()
 for x,y in enumerate(p1): 
     if len(y) == 1:
         colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
             max_x = costes_totales[x][-1]
         if tiempos_totales1[x][-1] > max_y:
             max_y = tiempos_totales1[x][-1] 
-    if len(y) == 3:
+    if len(y) == 4:
         plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
         costs_list_q.append(costes_totales[x][-1])
         times_list_q.append(tiempos_totales1[x][-1])  
-                
 plt.plot(costs_list_c, times_list_c, 'b')
-#plt.plot(costs_list_q, times_list_q, 'r')
-
+plt.plot(costs_list_q, times_list_q, 'r')
 plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
-plt.xlim(right = max_x)
-plt.ylim(top = max_y)
-
+#plt.xlim(right = 1.1 * max_x)
+#plt.ylim(top = 1.1 * max_y)
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
 plt.legend(by_label.values(), by_label.keys())
