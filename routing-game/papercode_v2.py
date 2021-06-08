@@ -366,7 +366,7 @@ for x,y in enumerate(p1):
         costs_list_q.append(costes_totales[x][-1])
         times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b')
-plt.plot(costs_list_q, times_list_q, 'r')
+#plt.plot(costs_list_q, times_list_q, 'r')
 plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
 #plt.xlim(right = 1.1 * max_x)
