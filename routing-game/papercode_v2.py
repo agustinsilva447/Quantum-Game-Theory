@@ -81,6 +81,12 @@ def opciones_cuan(n, tipo):
         a2 = {'10': 1}
         a3 = {'11': 1}
         x = [a0, a1, a2, a3]
+        """
+        ibmq_16_melbourne: 	{'00': 837, '01': 3076, '10': 3869, '11': 410}
+        ibmq_athens: 		{'00': 204, '01': 3940, '10': 3942, '11': 106}
+        ibmq_manila: 		{'00': 370, '01': 4161, '10': 3484, '11': 177}
+        ibmq_santiago: 		{'00': 156, '01': 3994, '10': 3923, '11': 119}        
+        """
         if c == "ibmq_16_melbourne":
             return np.random.choice(x, p = [837/8192,3076/8192,3869/8192,410/8192])     # from IBMQ experience
         if c == "ibmq_athens":
