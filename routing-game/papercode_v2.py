@@ -81,7 +81,16 @@ def opciones_cuan(n, tipo):
         a2 = {'10': 1}
         a3 = {'11': 1}
         x = [a0, a1, a2, a3]
-        return np.random.choice(x, p = [0.25 * (1 - c), 0.25 * (1 + c), 0.25 * (1 + c), 0.25 * (1 - c)])
+        if c == "ibmq_16_melbourne":
+            return np.random.choice(x, p = [837/8192,3076/8192,3869/8192,410/8192])     # from IBMQ experience
+        if c == "ibmq_athens":
+            return np.random.choice(x, p = [204/8192,3940/8192,3942/8192,106/8192])     # from IBMQ experience
+        if c == "ibmq_manila":
+            return np.random.choice(x, p = [370/8192,4161/8192,3484/8192,177/8192])     # from IBMQ experience
+        if c == "ibmq_santiago":
+            return np.random.choice(x, p = [156/8192,3994/8192,3923/8192,119/8192])     # from IBMQ experience
+        else:
+            return np.random.choice(x, p = [0.25 * (1 - c), 0.25 * (1 + c), 0.25 * (1 + c), 0.25 * (1 - c)])
 
 def crear_circuito(n, tipo):
     I_f = np.array([[1, 0],
@@ -135,20 +144,18 @@ def juego(lista, tipo):
         for r in range(int(np.ceil(np.log2(m)))):
             ganadores = []            
             for j in range(int(np.ceil(m/2))):
-                jug = 2 - int(m == j+int(np.ceil(m/2)))
-                        
+                jug = 2 - int(m == j+int(np.ceil(m/2)))                        
+                if len(tipo) == 1:
+                    measurement = opciones_clas(jug, tipo[0])
                 if len(tipo) == 4:
-                    """
-                    # esto es para simular el circuito en python
+                    # esto es para simular el circuito con ruido en python
                     measurement = opciones_cuan(jug, tipo)
                     """
                     # esto es para correr el circuito en el simulador de IBM
                     circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
-                if len(tipo) == 1:
-                    measurement = opciones_clas(jug, tipo[0])
-
+                    """
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
@@ -166,16 +173,24 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 1                                                                                          # cantidad de iteraciones
+n4 = 50                                                                                          # cantidad de iteraciones
 
 p1 = []
-probas = np.arange(0,1,0.1)                                                                     # probabilidades de ceder
-for _p in probas:
+
+probas = np.arange(0,1,0.1)             
+for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 
-"""
-for c in np.arange(0,1.1,0.1):
-    p1.append([np.pi/2, np.pi/4, 0, c]) # Pareto sí, Nash no y Pura
+p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
+
+deco = np.arange(0,1,0.1)               
+for c in deco:                          # decoherencia de werner
+    p1.append([np.pi/2, np.pi/4, 0, c]) 
+
+devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago"]
+for c in devices:                       # IBM devices
+    p1.append([np.pi/2, np.pi/4, 0, c]) 
+
 """
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
@@ -184,6 +199,7 @@ for _x in angulos:
             check = [_x,_y,_z, 1]
             if checkear_nozero(check):
                 p1.append(check)
+"""
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -351,10 +367,10 @@ times_list_q = []
 plt.title("Trade-off grapf for {} nodes".format(n1))
 #p1.reverse()
 for x,y in enumerate(p1): 
+    colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
     if len(y) == 1:
-        colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
-        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
@@ -362,9 +378,12 @@ for x,y in enumerate(p1):
         if tiempos_totales1[x][-1] > max_y:
             max_y = tiempos_totales1[x][-1] 
     if len(y) == 4:
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
-        costs_list_q.append(costes_totales[x][-1])
-        times_list_q.append(tiempos_totales1[x][-1])  
+        if type(y[3]) == str:
+            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'IBMQ = {}'.format(y[3]), marker='o')
+        else:
+            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
+            costs_list_q.append(costes_totales[x][-1])
+            times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b')
 #plt.plot(costs_list_q, times_list_q, 'r')
 plt.xlabel('Cost per package')
