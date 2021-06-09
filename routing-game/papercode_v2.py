@@ -154,6 +154,7 @@ def juego(lista, tipo):
                 if len(tipo) == 1:
                     measurement = opciones_clas(jug, tipo[0])
                 if len(tipo) == 4:
+                    """
                     # esto es para simular el circuito con ruido en python
                     measurement = opciones_cuan(jug, tipo)
                     """
@@ -161,7 +162,6 @@ def juego(lista, tipo):
                     circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
-                    """
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
