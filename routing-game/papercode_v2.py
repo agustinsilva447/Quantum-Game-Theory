@@ -154,6 +154,7 @@ def juego(lista, tipo):
                 if len(tipo) == 1:
                     measurement = opciones_clas(jug, tipo[0])
                 if len(tipo) == 4:
+                    """
                     # esto es para simular el circuito con ruido en python
                     measurement = opciones_cuan(jug, tipo)
                     """
@@ -161,7 +162,6 @@ def juego(lista, tipo):
                     circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
-                    """
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
@@ -179,14 +179,15 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 50                                                                                          # cantidad de iteraciones
+n4 = 25                                                                                          # cantidad de iteraciones
 
 p1 = []
 
-probas = np.arange(0,1,0.1)             
+probas = np.arange(0,1,0.01)             
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 
+"""
 p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
 deco = np.arange(0,1,0.1)               
@@ -196,7 +197,6 @@ for c in deco:                          # decoherencia de werner
 devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago"]
 for c in devices:                       # IBM devices
     p1.append([np.pi/2, np.pi/4, 0, c]) 
-
 """
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
@@ -205,7 +205,6 @@ for _x in angulos:
             check = [_x,_y,_z, 1]
             if checkear_nozero(check):
                 p1.append(check)
-"""
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -216,7 +215,7 @@ for tipo in p1:
     if len(tipo) == 1:
         version = "CLÁSICO"
         version_2 = "p"
-        tests = n4
+        tests = 2*n4
     if len(tipo) == 4:
         version = "CUÁNTICO"
         version_2 = "[Rx, Ry, Rz, c]"
@@ -375,8 +374,8 @@ plt.title("Trade-off grapf for {} nodes".format(n1))
 for x,y in enumerate(p1): 
     colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
     if len(y) == 1:
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
-        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
+        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
