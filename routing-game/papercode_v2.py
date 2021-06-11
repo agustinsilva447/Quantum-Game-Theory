@@ -85,7 +85,10 @@ def opciones_cuan(n, tipo):
         ibmq_16_melbourne: 	{'00': 837, '01': 3076, '10': 3869, '11': 410}
         ibmq_athens: 		{'00': 204, '01': 3940, '10': 3942, '11': 106}
         ibmq_manila: 		{'00': 370, '01': 4161, '10': 3484, '11': 177}
-        ibmq_santiago: 		{'00': 156, '01': 3994, '10': 3923, '11': 119}        
+        ibmq_santiago: 		{'00': 156, '01': 3994, '10': 3923, '11': 119}       
+        ibmq_lima:          {'00': 4368, '01': 685, '10': 818, '11': 2321}
+        ibmq_belem:         {'00': 880, '01': 2825, '10': 3922, '11': 565}
+        ibmq_quito:         {'00': 398, '01': 4124, '10': 3544, '11': 126}
         """
         if c == "ibmq_16_melbourne":
             return np.random.choice(x, p = [837/8192,3076/8192,3869/8192,410/8192])     # from IBMQ experience
@@ -95,6 +98,12 @@ def opciones_cuan(n, tipo):
             return np.random.choice(x, p = [370/8192,4161/8192,3484/8192,177/8192])     # from IBMQ experience
         if c == "ibmq_santiago":
             return np.random.choice(x, p = [156/8192,3994/8192,3923/8192,119/8192])     # from IBMQ experience
+        if c == "ibmq_lima":
+            return np.random.choice(x, p = [4368/8192,685/8192,818/8192,2321/8192])     # from IBMQ experience
+        if c == "ibmq_belem":
+            return np.random.choice(x, p = [880/8192,2825/8192,3922/8192,565/8192])     # from IBMQ experience
+        if c == "ibmq_quito":
+            return np.random.choice(x, p = [398/8192,4124/8192,3544/8192,126/8192])     # from IBMQ experience
         else:
             return np.random.choice(x, p = [0.25 * (1 - c), 0.25 * (1 + c), 0.25 * (1 + c), 0.25 * (1 - c)])
 
@@ -139,7 +148,8 @@ def crear_circuito(n, tipo):
     for q in range(n):
         circ.append(RXGate(dx),[q])
         circ.append(RYGate(dy),[q])
-        circ.append(RZGate(dz),[q])         
+        circ.append(RZGate(dz),[q])    
+
     circ.append(J_dg, range(n))
     circ.measure(range(n), range(n))  
     return circ
@@ -154,7 +164,6 @@ def juego(lista, tipo):
                 if len(tipo) == 1:
                     measurement = opciones_clas(jug, tipo[0])
                 if len(tipo) == 4:
-                    """
                     # esto es para simular el circuito con ruido en python
                     measurement = opciones_cuan(jug, tipo)
                     """
@@ -162,6 +171,7 @@ def juego(lista, tipo):
                     circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
+                    """
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
@@ -179,22 +189,21 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 25                                                                                          # cantidad de iteraciones
+n4 = 50                                                                                          # cantidad de iteraciones
 
 p1 = []
 
-probas = np.arange(0,1,0.01)             
+probas = np.arange(0,1,0.1)             
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 
-"""
-p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
-deco = np.arange(0,1,0.1)               
+deco = np.arange(-1/3,1,1/9)               
 for c in deco:                          # decoherencia de werner
     p1.append([np.pi/2, np.pi/4, 0, c]) 
+p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
-devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago"]
+devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago", "ibmq_lima", "ibmq_belem", "ibmq_quito"]
 for c in devices:                       # IBM devices
     p1.append([np.pi/2, np.pi/4, 0, c]) 
 """
@@ -205,6 +214,7 @@ for _x in angulos:
             check = [_x,_y,_z, 1]
             if checkear_nozero(check):
                 p1.append(check)
+"""
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -215,7 +225,7 @@ for tipo in p1:
     if len(tipo) == 1:
         version = "CLÁSICO"
         version_2 = "p"
-        tests = 2*n4
+        tests = n4
     if len(tipo) == 4:
         version = "CUÁNTICO"
         version_2 = "[Rx, Ry, Rz, c]"
@@ -225,6 +235,7 @@ for tipo in p1:
     tiempos1 = []
     tiempos2 = []
     costes = []
+
     for cant,n2 in enumerate(n2_array):    
         t = 0
         t1 = 0
@@ -390,7 +401,7 @@ for x,y in enumerate(p1):
             costs_list_q.append(costes_totales[x][-1])
             times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b')
-#plt.plot(costs_list_q, times_list_q, 'r')
+plt.plot(costs_list_q, times_list_q, 'r')
 plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
 #plt.xlim(right = 1.1 * max_x)
