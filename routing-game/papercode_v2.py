@@ -189,24 +189,26 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 50                                                                                          # cantidad de iteraciones
+n4 = 30                                                                                          # cantidad de iteraciones
 
 p1 = []
 
-probas = np.arange(0,1,0.1)             
+
+probas = np.arange(0,1,0.1)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 
 
-deco = np.arange(-1/3,1,1/9)               
+deco = np.arange(-1/3,1,(4/27))               
 for c in deco:                          # decoherencia de werner
     p1.append([np.pi/2, np.pi/4, 0, c]) 
 p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
+"""
 devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago", "ibmq_lima", "ibmq_belem", "ibmq_quito"]
 for c in devices:                       # IBM devices
     p1.append([np.pi/2, np.pi/4, 0, c]) 
-"""
+
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
     for _y in angulos:
@@ -385,8 +387,8 @@ plt.title("Trade-off grapf for {} nodes".format(n1))
 for x,y in enumerate(p1): 
     colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
     if len(y) == 1:
-        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
@@ -397,7 +399,8 @@ for x,y in enumerate(p1):
         if type(y[3]) == str:
             plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'IBMQ = {}'.format(y[3]), marker='o')
         else:
-            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
+            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Quantum (c = {})'.format(np.round(y[3],3)), marker='o')
+            #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
             costs_list_q.append(costes_totales[x][-1])
             times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b')
@@ -406,7 +409,8 @@ plt.xlabel('Cost per package')
 plt.ylabel('Connection time')
 #plt.xlim(right = 1.1 * max_x)
 #plt.ylim(top = 1.1 * max_y)
+
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
-plt.legend(by_label.values(), by_label.keys())
+plt.legend(by_label.values(), by_label.keys(), ncol=2)
 plt.show()
