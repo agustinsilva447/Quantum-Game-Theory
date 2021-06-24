@@ -1,10 +1,39 @@
 Filmina 1:
-	Mi nombre es Agustin Silva
-	Este trabajo es parte mi doctorado en simulación y modelado computacional en la FI de la UNMDP
-	Esta es la presentación correspondiente a la microcharla del TREFEMAC 2021 y el tema será la aplicación de la QGT para mitigar el problema de la congestion en sistemas de comunicación con gran densidad de paquetes de datos
-Filmina 2:
-	La congestión es un problema importante en las redes de switcheo cuando hay demasiados paquetes presentes en una parte de la subred.
-	Hasta un punto, la cantidad de paquetes vertidos en la subred está dentro de su capacidad de carga, todos se entregan y no hay congestión.
-	A medida que el tráfico aumenta aún más, el rendimiento se degrada cada vez más y se pierden más paquetes y la congestión empeora. Con un tráfico muy alto, el rendimiento se colapsa por completo y se pierden casi todos los paquetes.
-Filmina 3:
+
+	Mi nombre es Agustin Silva, este trabajo es parte mi doctorado en simulación y modelado computacional en la FI de la UNMDP
 	
+	El tema de esta presentación será la aplicación de la QGT en el problema de la mitigación de la congestion en sistemas de comunicación con una gran densidad de paquetes de datos
+
+Filmina 2:
+	
+	Esto es un fenómeno cada día más frecuente en los sistemas modernos y afecta notablemente la eficiencia de las redes.
+
+	Hasta un punto, la cantidad de paquetes vertidos en la subred está dentro de su capacidad de carga, todos se entregan y no hay congestión. A medida que el tráfico aumenta aún más, el rendimiento se degrada cada vez más y se pierden más paquetes y la congestión empeora. Con un tráfico muy alto, el rendimiento se colapsa por completo y se pierden casi todos los paquetes.
+	
+	[explicar imagen]
+
+Filmina 3:
+
+	Analiza sistemas de toma de decisiones que involucren dos o más agentes donde las decisiones de cada individuo influencian no sólo su propia recompensa, sino la de todos. Por lo tanto, la Teoría de Juegos Cuántica...
+
+	(, y donde los beneficios de los movimientos puedan cuantificarse razonablemente,)
+	
+	Utilizando el formalismo de la información cuántica, la teoría de juegos cuántica estudia el efecto de la superposición, la interferencia y el entrelazamiento cuántico en las estrategias de los jugadores.
+	
+	[explicar imagen]
+
+Filmina 4:
+
+	El manejo de la congestión, a grandes rasgos, se puede resumir como una compensación entre la latencia de transmisión y el costo de envío.
+	
+	El rendimiento del protocolo fue tanto simulado bajo las influencias del ruido y luego implementada en las computadoras cuánticas reales disponibles, y a pesar de la decoherencia siguió mostrando beneficios frente al caso clásico.
+	
+	[explicar imagen]
+
+Filmina 5:
+
+	Ya que en general la Teoría de Juegos Cuántica por lo general se aplica a escenarios pequeños con pocos jugadores y con los beneficios totalmente determinados.
+	
+	Más allá de las simulaciones que no tienen en cuenta algunos escenarios que sí se presentan en los sistemas reales.
+	
+	Y es importante destacar que estos beneficios se mantienen no solo en caso ideal sin decoherencia, sino también ruido simulado en el canal y computadoras cuánticas reales.
