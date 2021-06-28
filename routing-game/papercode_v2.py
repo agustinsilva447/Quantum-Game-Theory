@@ -192,6 +192,8 @@ n3 = 2                                                                          
 n4 = 50                                                                                          # cantidad de iteraciones
 
 p1 = []
+#p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
+#p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
 probas = np.arange(0,1,0.1)            
 for _p in probas:                       # probabilidades de ceder
@@ -316,7 +318,6 @@ edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 """
-
 """
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -324,12 +325,12 @@ fig, axs = plt.subplots(1, 2, figsize=(20,10))
 axs[0].set_title("Traveling time ({} nodes)".format(n1))
 axs[1].set_title("Routing time ({} nodes)".format(n1))
 for x,y in enumerate(p1):
-    if y == 'q':
-        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum (p = {})'.format(y), marker='.')
-        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Quantum (p = {})'.format(y), marker='.')
+    if len(y) == 4:
+        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum', marker='.')
+        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Quantum', marker='.')
     else:
-        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
-        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
+        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
+        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
 axs[0].set_xlabel('Number of packages')
 axs[0].set_ylabel('Time')
 axs[1].set_xlabel('Number of packages')
@@ -338,7 +339,6 @@ axs[0].legend()
 axs[1].legend()
 plt.show()
 """
-
 """
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -380,7 +380,7 @@ costs_list_c = []
 times_list_c = []
 costs_list_q = []
 times_list_q = []
-plt.title("Trade-off grapf for {} nodes".format(n1))
+#plt.title("Trade-off grapf for {} nodes".format(n1))
 #p1.reverse()
 for x,y in enumerate(p1): 
     colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
