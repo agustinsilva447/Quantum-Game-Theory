@@ -189,7 +189,7 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 30                                                                                          # cantidad de iteraciones
+n4 = 50                                                                                          # cantidad de iteraciones
 
 p1 = []
 
@@ -197,7 +197,7 @@ probas = np.arange(0,1,0.1)
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 
-deco = np.arange(-1/3,1,(4/27))               
+deco = np.arange(-1/3,1,(1/9))               
 for c in deco:                          # decoherencia de werner
     p1.append([np.pi/2, np.pi/4, 0, c]) 
 p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
@@ -321,8 +321,8 @@ plt.show()
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(1, 2, figsize=(20,10))
-axs[0].set_title("Cost vs number of packages ({} nodes)".format(n1))
-axs[1].set_title("Number of attempts (games) to connect.")
+axs[0].set_title("Traveling time ({} nodes)".format(n1))
+axs[1].set_title("Routing time ({} nodes)".format(n1))
 for x,y in enumerate(p1):
     if y == 'q':
         axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum (p = {})'.format(y), marker='.')
@@ -331,9 +331,9 @@ for x,y in enumerate(p1):
         axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
         axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y), marker='.')
 axs[0].set_xlabel('Number of packages')
-axs[0].set_ylabel('Cost')
+axs[0].set_ylabel('Time')
 axs[1].set_xlabel('Number of packages')
-axs[1].set_ylabel('Times')
+axs[1].set_ylabel('Time')
 axs[0].legend()
 axs[1].legend()
 plt.show()
@@ -343,9 +343,9 @@ plt.show()
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(2, 3,figsize=(30,20))
-axs[0, 0].set_title("Cost vs number of packages ({} nodes)".format(n1))
-axs[0, 1].set_title("(Cost * Total Attemps)")
-axs[0, 2].set_title("(Cost * Games Attemps)")
+axs[0, 0].set_title("Traveling time vs number of packages ({} nodes)".format(n1))
+axs[0, 1].set_title("(Traveling time * Total Attemps)")
+axs[0, 2].set_title("(Traveling time * Games Attemps)")
 axs[1, 0].set_title("Number of attempts (empty) to connect.")
 axs[1, 1].set_title("Total number of attempts to connect")
 axs[1, 2].set_title("Number of attempts (games) to connect.")
@@ -367,7 +367,7 @@ for x,y in enumerate(p1):
 axs[1, 0].set_xlabel('Number of packages')
 axs[1, 1].set_xlabel('Number of packages')
 axs[1, 2].set_xlabel('Number of packages')
-axs[0, 0].set_ylabel('Cost')
+axs[0, 0].set_ylabel('Traveling time')
 axs[1, 0].set_ylabel('Times')
 axs[0, 0].legend(loc='upper left')
 axs[1, 0].legend(loc='upper right')
@@ -397,14 +397,14 @@ for x,y in enumerate(p1):
         if type(y[3]) == str:
             plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'IBMQ = {}'.format(y[3]), marker='o')
         else:
-            #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Quantum (c = {})'.format(np.round(y[3],3)), marker='o')
+            #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Quantum (c = {})'.format(np.round(y[3],3)), marker='.')
             plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
             costs_list_q.append(costes_totales[x][-1])
             times_list_q.append(tiempos_totales1[x][-1])  
-plt.plot(costs_list_c, times_list_c, 'b')
-plt.plot(costs_list_q, times_list_q, 'r')
-plt.xlabel('Cost per package')
-plt.ylabel('Connection time')
+plt.plot(costs_list_c, times_list_c, 'b') #, label = 'Classical')
+plt.plot(costs_list_q, times_list_q, 'r') #, label = 'Quantum')
+plt.xlabel('Traveling time')
+plt.ylabel('Routing time')
 #plt.xlim(right = 1.1 * max_x)
 #plt.ylim(top = 1.1 * max_y)
 
