@@ -189,13 +189,13 @@ n1 = 20                                                                         
 #n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
 n2_array = [10 * n1]                                                                             # cantidad de paquetes
 n3 = 2                                                                                           # distancia máxima
-n4 = 50                                                                                          # cantidad de iteraciones
+n4 = 30                                                                                          # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
-probas = np.arange(0,1,0.1)            
+probas = np.arange(0.3,0.8,0.1)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 
