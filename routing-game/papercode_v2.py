@@ -185,16 +185,23 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 20                                                                                          # cantidad de ciudades
-#n2_array = np.arange(int(np.ceil(0.25 * n1)), int(np.ceil(10 * n1)), int(np.ceil(0.25 * n1)))   # cantidad de paquetes
-n2_array = [10 * n1]                                                                             # cantidad de paquetes
-n3 = 2                                                                                           # distancia máxima
-n4 = 30                                                                                          # cantidad de iteraciones
+n1 = 10                                                                                          # cantidad de ciudades
+n2_array = np.arange(int(np.ceil(n1)), int(np.ceil(10 * n1)), int(np.ceil(n1)))                  # cantidad de paquetes
+#n2_array = [10 * n1]                                                                            # cantidad de paquetes
+n3 = 10                                                                                          # distancia máxima
+n4 = 10                                                                                           # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
-#p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
+"""
+probas = np.arange(0, 1, 0.1)            
+for _p in probas:                       # probabilidades de ceder
+    p1.append([_p])
+"""
+
+"""
 probas = np.arange(0.3,0.8,0.1)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
@@ -207,6 +214,7 @@ p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago", "ibmq_lima", "ibmq_belem", "ibmq_quito"]
 for c in devices:                       # IBM devices
     p1.append([np.pi/2, np.pi/4, 0, c]) 
+"""
 
 """
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
@@ -295,7 +303,7 @@ for tipo in p1:
         tiempos2.append(t2)
         coste = coste / tests
         costes.append(coste)
-        print("{:0>3} - Versión {} ({} = {}) para {} ciudades y {} paquetes. Coste = {}. Tiempo = {}\n".format(cant+1, version, version_2, tipo, n1, n2, coste, t))
+        print("{:0>3} - Versión {} ({} = {}) para {} ciudades y {} paquetes. Traveling time = {}. Routing Time = {}\n".format(cant+1, version, version_2, tipo, n1, n2, coste, t1))
     tiempos_totales.append(tiempos)
     tiempos_totales1.append(tiempos1)
     tiempos_totales2.append(tiempos2)
@@ -318,27 +326,32 @@ edge_weights_list = [net2[e[0]][e[1]]['weight'] for e in net2.edges()]
 nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_labels = True, width=edge_weights_list)
 plt.show() 
 """
-"""
+
+#print(costes_totales)
+#print(tiempos_totales1)
+
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
-fig, axs = plt.subplots(1, 2, figsize=(20,10))
+fig, axs = plt.subplots(3, 1, figsize=(20,60))
 axs[0].set_title("Traveling time ({} nodes)".format(n1))
 axs[1].set_title("Routing time ({} nodes)".format(n1))
+axs[2].set_title("Total time ({} nodes)".format(n1))
 for x,y in enumerate(p1):
     if len(y) == 4:
         axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum', marker='.')
         axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Quantum', marker='.')
+        axs[2].plot(n2_array,np.add(costes_totales[x],tiempos_totales1[x]), c[x], label = 'Quantum', marker='.')
     else:
         axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
         axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
-axs[0].set_xlabel('Number of packages')
+        axs[2].plot(n2_array,np.add(costes_totales[x],tiempos_totales1[x]), c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
 axs[0].set_ylabel('Time')
-axs[1].set_xlabel('Number of packages')
 axs[1].set_ylabel('Time')
-axs[0].legend()
-axs[1].legend()
+axs[2].set_ylabel('Time')
+axs[2].set_xlabel('Number of packages')
+axs[2].legend()
 plt.show()
-"""
+
 """
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -374,6 +387,7 @@ axs[1, 0].legend(loc='upper right')
 plt.show()
 """
 
+"""
 max_x = 0
 max_y = 0
 costs_list_c = []
@@ -412,3 +426,4 @@ handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
 plt.legend(by_label.values(), by_label.keys(), ncol=1)
 plt.show()
+"""
