@@ -189,7 +189,7 @@ n1 = 10                                                                         
 n2_array = np.arange(int(np.ceil(n1)), int(np.ceil(10 * n1)), int(np.ceil(n1)))                  # cantidad de paquetes
 #n2_array = [10 * n1]                                                                            # cantidad de paquetes
 n3 = 10                                                                                          # distancia máxima
-n4 = 10                                                                                           # cantidad de iteraciones
+n4 = 10                                                                                          # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
