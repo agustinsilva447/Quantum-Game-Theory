@@ -185,7 +185,7 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 10                                                                                          # cantidad de ciudades
+n1 = 5                                                                                          # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(n1)), int(np.ceil(10 * n1)), int(np.ceil(n1)))                  # cantidad de paquetes
 #n2_array = [10 * n1]                                                                            # cantidad de paquetes
 n3 = 10                                                                                          # distancia máxima
@@ -332,7 +332,7 @@ plt.show()
 
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
-fig, axs = plt.subplots(3, 1, figsize=(20,60))
+fig, axs = plt.subplots(3, 1)
 axs[0].set_title("Traveling time ({} nodes)".format(n1))
 axs[1].set_title("Routing time ({} nodes)".format(n1))
 axs[2].set_title("Total time ({} nodes)".format(n1))
@@ -346,10 +346,10 @@ for x,y in enumerate(p1):
         axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
         axs[2].plot(n2_array,np.add(costes_totales[x],tiempos_totales1[x]), c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
 axs[0].set_ylabel('Time')
+axs[0].legend(bbox_to_anchor=(1,1))
 axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packages')
-axs[2].legend()
 plt.show()
 
 """
