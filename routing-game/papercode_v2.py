@@ -185,7 +185,7 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 5                                                                                          # cantidad de ciudades
+n1 = 10                                                                                          # cantidad de ciudades
 n2_array = np.arange(int(np.ceil(n1)), int(np.ceil(10 * n1)), int(np.ceil(n1)))                  # cantidad de paquetes
 #n2_array = [10 * n1]                                                                            # cantidad de paquetes
 n3 = 10                                                                                          # distancia máxima
@@ -193,7 +193,8 @@ n4 = 10                                                                         
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
-p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+#p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
 """
 probas = np.arange(0, 1, 0.1)            
@@ -351,6 +352,24 @@ axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packages')
 plt.show()
+
+#################
+
+fig = plt.figure()
+ax = plt.axes(projection="3d")
+ax.plot3D(n2_array, costes_totales[0], tiempos_totales1[0], 'b', label = 'p = {}'.format(p1[0]))
+ax.plot3D(n2_array, costes_totales[1], tiempos_totales1[1], 'g', label = 'p = {}'.format(p1[1]))
+ax.plot3D(n2_array, costes_totales[2], tiempos_totales1[2], 'c', label = 'p = {}'.format(p1[2]))
+ax.plot3D(n2_array, costes_totales[3], tiempos_totales1[3], 'm', label = 'p = {}'.format(p1[3]))
+ax.plot3D(n2_array, costes_totales[4], tiempos_totales1[4], 'y', label = 'p = {}'.format(p1[4]))
+ax.plot3D(n2_array, costes_totales[5], tiempos_totales1[5], 'r', label = 'quantum')
+ax.set_xlabel('Packets Number')
+ax.set_ylabel('Traveling Time')
+ax.set_zlabel('Routing Time')
+ax.legend(bbox_to_anchor=(1,1))
+plt.show()
+
+#################
 
 """
 # funcion para 5 probabilidades y 1 cuántica
