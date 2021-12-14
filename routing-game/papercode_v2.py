@@ -185,21 +185,22 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 10                                                                                          # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))           # cantidad de paquetes
-#n2_array = [10 * n1]                                                                            # cantidad de paquetes
-n3 = 10                                                                                          # distancia máxima
-n4 = 20                                                                                          # cantidad de iteraciones
+n1 = 20                                                                                         # cantidad de ciudades
+n2_array = np.arange(int(0.25*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.25*np.ceil(n1)))       # cantidad de paquetes
+#n2_array = [10 * n1]                                                                           # cantidad de paquetes
+n3 = 2                                                                                          # distancia máxima
+n4 = 50                                                                                         # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
-#p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
-p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+#p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
 """
 probas = np.arange(0, 1, 0.1)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
+#p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 """
 
 """
@@ -210,7 +211,6 @@ for _p in probas:                       # probabilidades de ceder
 deco = np.arange(-1/3,1,(1/9))               
 for c in deco:                          # decoherencia de werner
     p1.append([np.pi/2, np.pi/4, 0, c]) 
-p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
 devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago", "ibmq_lima", "ibmq_belem", "ibmq_quito"]
 for c in devices:                       # IBM devices
@@ -333,6 +333,27 @@ plt.show()
 
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
+fig, axs = plt.subplots(1, 2)
+axs[0].set_title("Traveling time ({} nodes)".format(n1))
+axs[1].set_title("Routing time ({} nodes)".format(n1))
+for x,y in enumerate(p1):
+    if len(y) == 4:
+        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Quantum', marker='.')
+        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Quantum', marker='.')
+    else:
+        axs[0].plot(n2_array,costes_totales[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
+        axs[1].plot(n2_array,tiempos_totales1[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
+axs[0].set_xlabel('Number of packets')
+axs[0].set_ylabel('Time')
+axs[0].legend(loc='upper left')
+axs[1].set_xlabel('Number of packets')
+axs[1].set_ylabel('Time')
+axs[1].legend(loc='upper left')
+plt.show()
+
+"""
+# funcion para 5 probabilidades y 1 cuántica
+c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(3, 1)
 axs[0].set_title("Traveling time ({} nodes)".format(n1))
 axs[1].set_title("Routing time ({} nodes)".format(n1))
@@ -350,8 +371,9 @@ axs[0].set_ylabel('Time')
 axs[0].legend(bbox_to_anchor=(1,1))
 axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
-axs[2].set_xlabel('Number of packages')
+axs[2].set_xlabel('Number of packets')
 plt.show()
+"""
 
 """
 
@@ -413,13 +435,13 @@ costs_list_c = []
 times_list_c = []
 costs_list_q = []
 times_list_q = []
-#plt.title("Trade-off grapf for {} nodes".format(n1))
+plt.title("Trade-off graph for {} nodes".format(n1))
 #p1.reverse()
 for x,y in enumerate(p1): 
     colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
     if len(y) == 1:
-        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
@@ -431,7 +453,7 @@ for x,y in enumerate(p1):
             plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'IBMQ = {}'.format(y[3]), marker='o')
         else:
             #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Quantum (c = {})'.format(np.round(y[3],3)), marker='.')
-            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
+            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
             costs_list_q.append(costes_totales[x][-1])
             times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b') #, label = 'Classical')
