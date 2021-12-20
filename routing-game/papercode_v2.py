@@ -186,7 +186,7 @@ def checkear_nozero(check):
     return ['00'] != list(measurement.keys())
 
 n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
+n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(20 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
 #n2_array = [10 * n1]                                                                           # cantidad de paquetes
 n3 = 10                                                                                         # distancia máxima
 n4 = 10                                                                                          # cantidad de iteraciones
