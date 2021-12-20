@@ -185,11 +185,11 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 20                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.25*np.ceil(n1)), int(np.ceil(20 * n1)), int(0.25*np.ceil(n1)))       # cantidad de paquetes
+n1 = 10                                                                                         # cantidad de ciudades
+n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
 #n2_array = [10 * n1]                                                                           # cantidad de paquetes
-n3 = 2                                                                                          # distancia máxima
-n4 = 2                                                                                         # cantidad de iteraciones
+n3 = 10                                                                                         # distancia máxima
+n4 = 10                                                                                          # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
@@ -331,6 +331,7 @@ plt.show()
 #print(costes_totales)
 #print(tiempos_totales1)
 
+"""
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(1, 2)
@@ -350,7 +351,6 @@ axs[1].set_xlabel('Number of packets')
 axs[1].set_ylabel('Time')
 axs[1].legend(loc='upper left')
 plt.show()
-
 """
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -373,7 +373,6 @@ axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packets')
 plt.show()
-"""
 
 """
 
