@@ -186,7 +186,7 @@ def checkear_nozero(check):
     return ['00'] != list(measurement.keys())
 
 n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
+n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(20 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
 #n2_array = [10 * n1]                                                                           # cantidad de paquetes
 n3 = 10                                                                                         # distancia máxima
 n4 = 10                                                                                          # cantidad de iteraciones
@@ -299,7 +299,7 @@ for tipo in p1:
             if ((p+1)%(tests/2) == 0):
                 print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, int(tiemp), envio, temp))
             coste += temp   
-            dr += (n2 - envio)/(envio)
+            dr += (envio)/(n2)
         dr = (dr)/(tests)
         t = t / tests
         t1 = t1 / tests
@@ -388,6 +388,9 @@ for x,y in enumerate(p1):
         plt.plot(n2_array,drop_rate_total[x], c[x], label = 'Quantum', marker='.')
     else:
         plt.plot(n2_array,drop_rate_total[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
+plt.title("Packets Dropout")
+plt.xlabel("Number of packets")
+plt.ylabel("% delivery")        
 plt.legend()        
 plt.show()
 
