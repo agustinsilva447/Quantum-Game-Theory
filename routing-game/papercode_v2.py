@@ -186,7 +186,7 @@ def checkear_nozero(check):
     return ['00'] != list(measurement.keys())
 
 n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(20 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
+n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
 #n2_array = [10 * n1]                                                                           # cantidad de paquetes
 n3 = 10                                                                                         # distancia máxima
 n4 = 10                                                                                          # cantidad de iteraciones
@@ -231,6 +231,7 @@ tiempos_totales = []
 tiempos_totales1 = []
 tiempos_totales2 = []
 costes_totales = []
+drop_rate_total = []
 
 for tipo in p1:
     if len(tipo) == 1:
@@ -246,12 +247,14 @@ for tipo in p1:
     tiempos1 = []
     tiempos2 = []
     costes = []
+    drop_rate = []
 
     for cant,n2 in enumerate(n2_array):    
         t = 0
         t1 = 0
         t2 = 0
         coste = 0
+        dr = 0
         for p in range(tests):
             a = generar_mapa()                            # genero matriz
             net1, edge_weights_list = generar_red(a)      # genero red
@@ -296,15 +299,19 @@ for tipo in p1:
             if ((p+1)%(tests/2) == 0):
                 print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, int(tiemp), envio, temp))
             coste += temp   
+            dr += (n2 - envio)/(envio)
+        dr = (dr)/(tests)
         t = t / tests
         t1 = t1 / tests
         t2 = t2 / tests
+        drop_rate.append(dr)
         tiempos.append(t)
         tiempos1.append(t1)
         tiempos2.append(t2)
         coste = coste / tests
         costes.append(coste)
         print("{:0>3} - Versión {} ({} = {}) para {} ciudades y {} paquetes. Traveling time = {}. Routing Time = {}\n".format(cant+1, version, version_2, tipo, n1, n2, coste, t1))
+    drop_rate_total.append(drop_rate)        
     tiempos_totales.append(tiempos)
     tiempos_totales1.append(tiempos1)
     tiempos_totales2.append(tiempos2)
@@ -372,6 +379,16 @@ axs[0].legend(bbox_to_anchor=(1,1))
 axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packets')
+plt.show()
+
+
+c = ['b', 'g', 'c', 'm', 'y', 'r']
+for x,y in enumerate(p1):
+    if len(y) == 4:
+        plt.plot(n2_array,drop_rate_total[x], c[x], label = 'Quantum', marker='.')
+    else:
+        plt.plot(n2_array,drop_rate_total[x], c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
+plt.legend()        
 plt.show()
 
 """
