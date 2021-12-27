@@ -186,15 +186,16 @@ def checkear_nozero(check):
     return ['00'] != list(measurement.keys())
 
 n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(20 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
+n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
 #n2_array = [10 * n1]                                                                           # cantidad de paquetes
 n3 = 10                                                                                         # distancia máxima
-n4 = 10                                                                                          # cantidad de iteraciones
+n4 = 50                                                                                          # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
-p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+p1 = [[0.1], [0.3], [0.5], [0.7], [0.9]]
+#p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
 """
 probas = np.arange(0, 1, 0.1)            
@@ -338,7 +339,6 @@ plt.show()
 #print(costes_totales)
 #print(tiempos_totales1)
 
-"""
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(1, 2)
@@ -380,7 +380,19 @@ axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packets')
 plt.show()
+"""
 
+c = ['b', 'g', 'c', 'm', 'y', 'r']
+for x,y in enumerate(p1):
+    if len(y) == 4:
+        plt.plot(n2_array,np.add(costes_totales[x],tiempos_totales1[x]), c[x], label = 'Quantum', marker='.')
+    else:
+        plt.plot(n2_array,np.add(costes_totales[x],tiempos_totales1[x]), c[x], label = 'Classical (p = {})'.format(y[0]), marker='.')
+plt.title("Total time ({} nodes)".format(n1))
+plt.xlabel("Number of packets")
+plt.ylabel("Time")        
+plt.legend()        
+plt.show()
 
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 for x,y in enumerate(p1):
