@@ -164,6 +164,7 @@ def juego(lista, tipo):
                 if len(tipo) == 1:
                     measurement = opciones_clas(jug, tipo[0])
                 if len(tipo) == 4:
+                    """
                     # esto es para simular el circuito con ruido en python
                     measurement = opciones_cuan(jug, tipo)
                     """
@@ -171,7 +172,6 @@ def juego(lista, tipo):
                     circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
-                    """
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
@@ -186,23 +186,21 @@ def checkear_nozero(check):
     return ['00'] != list(measurement.keys())
 
 n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
-#n2_array = [10 * n1]                                                                           # cantidad de paquetes
+#n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))        # cantidad de paquetes
+n2_array = [10 * n1]                                                                            # cantidad de paquetes
 n3 = 10                                                                                         # distancia máxima
-n4 = 50                                                                                          # cantidad de iteraciones
+n4 = 20                                                                                          # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
-p1 = [[0.1], [0.3], [0.5], [0.7], [0.9]]
+#p1 = [[0.1], [0.3], [0.5], [0.7], [0.9]]
 #p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
-"""
-probas = np.arange(0, 1, 0.1)            
+probas = np.arange(0, 1, 0.01)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
 #p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
-"""
 
 """
 probas = np.arange(0.3,0.8,0.1)            
@@ -216,17 +214,16 @@ for c in deco:                          # decoherencia de werner
 devices = ["ibmq_16_melbourne", "ibmq_athens", "ibmq_manila", "ibmq_santiago", "ibmq_lima", "ibmq_belem", "ibmq_quito"]
 for c in devices:                       # IBM devices
     p1.append([np.pi/2, np.pi/4, 0, c]) 
-"""
+"""    
 
-"""
 angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
     for _y in angulos:
         for _z in angulos:
             check = [_x,_y,_z, 1]
+            print(_x,_y,_z)
             if checkear_nozero(check):
                 p1.append(check)
-"""
 
 tiempos_totales = []
 tiempos_totales1 = []
@@ -336,9 +333,9 @@ nx.draw(net2,node_size=750,node_color='red',edge_color = edge_color_list, with_l
 plt.show() 
 """
 
+"""
 #print(costes_totales)
 #print(tiempos_totales1)
-
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(1, 2)
@@ -358,6 +355,8 @@ axs[1].set_xlabel('Number of packets')
 axs[1].set_ylabel('Time')
 axs[1].legend(loc='upper left')
 plt.show()
+"""
+
 """
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -382,6 +381,7 @@ axs[2].set_xlabel('Number of packets')
 plt.show()
 """
 
+"""
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 for x,y in enumerate(p1):
     if len(y) == 4:
@@ -393,7 +393,9 @@ plt.xlabel("Number of packets")
 plt.ylabel("Time")        
 plt.legend()        
 plt.show()
+"""
 
+"""
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 for x,y in enumerate(p1):
     if len(y) == 4:
@@ -405,9 +407,9 @@ plt.xlabel("Number of packets")
 plt.ylabel("% delivery")        
 plt.legend()        
 plt.show()
-
 """
 
+"""
 fig = plt.figure()
 ax = plt.axes(projection="3d")
 ax.plot3D(n2_array, costes_totales[0], tiempos_totales1[0], 'b', label = 'p = {}'.format(p1[0]))
@@ -421,7 +423,6 @@ ax.set_ylabel('Traveling Time')
 ax.set_zlabel('Routing Time')
 ax.legend(bbox_to_anchor=(1,1))
 plt.show()
-
 """
 
 """
@@ -459,7 +460,6 @@ axs[1, 0].legend(loc='upper right')
 plt.show()
 """
 
-"""
 max_x = 0
 max_y = 0
 costs_list_c = []
@@ -471,8 +471,8 @@ plt.title("Trade-off graph for {} nodes".format(n1))
 for x,y in enumerate(p1): 
     colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
     if len(y) == 1:
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
-        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
+        #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
@@ -484,11 +484,11 @@ for x,y in enumerate(p1):
             plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'IBMQ = {}'.format(y[3]), marker='o')
         else:
             #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Quantum (c = {})'.format(np.round(y[3],3)), marker='.')
-            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
+            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
             costs_list_q.append(costes_totales[x][-1])
             times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b') #, label = 'Classical')
-plt.plot(costs_list_q, times_list_q, 'r') #, label = 'Quantum')
+#plt.plot(costs_list_q, times_list_q, 'r') #, label = 'Quantum')
 plt.xlabel('Traveling time')
 plt.ylabel('Routing time')
 #plt.xlim(right = 1.1 * max_x)
@@ -498,4 +498,3 @@ handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
 plt.legend(by_label.values(), by_label.keys(), ncol=1)
 plt.show()
-"""
