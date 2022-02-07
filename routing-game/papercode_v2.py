@@ -164,7 +164,6 @@ def juego(lista, tipo):
                 if len(tipo) == 1:
                     measurement = opciones_clas(jug, tipo[0])
                 if len(tipo) == 4:
-                    """
                     # esto es para simular el circuito con ruido en python
                     measurement = opciones_cuan(jug, tipo)
                     """
@@ -172,6 +171,7 @@ def juego(lista, tipo):
                     circ = crear_circuito(jug, tipo)
                     backend = Aer.get_backend('qasm_simulator')
                     measurement = execute(circ, backend=backend, shots=1).result().get_counts(circ)
+                    """
                 for k,i in enumerate(list(measurement.keys())[0]):
                     if i=='1':
                         ganadores.append(lista[2*j + k])                    
@@ -186,21 +186,21 @@ def checkear_nozero(check):
     return ['00'] != list(measurement.keys())
 
 n1 = 10                                                                                         # cantidad de ciudades
-#n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))        # cantidad de paquetes
-n2_array = [10 * n1]                                                                            # cantidad de paquetes
-n3 = 10                                                                                         # distancia máxima
-n4 = 20                                                                                          # cantidad de iteraciones
+n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
+#n2_array = [10 * n1]                                                                           # cantidad de paquetes
+n3 = 13                                                                                         # distancia máxima
+n4 = 10                                                                                         # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 #p1 = [[0.1], [0.3], [0.5], [0.7], [0.9]]
-#p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
-probas = np.arange(0, 1, 0.01)            
+"""probas = np.arange(0, 1, 0.1)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
-#p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
+p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro"""
 
 """
 probas = np.arange(0.3,0.8,0.1)            
@@ -216,20 +216,20 @@ for c in devices:                       # IBM devices
     p1.append([np.pi/2, np.pi/4, 0, c]) 
 """    
 
-angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
+"""angulos = np.arange(0, 2 * np.pi, np.pi/4)                                                      # rotaciones en x,y,z
 for _x in angulos:
     for _y in angulos:
         for _z in angulos:
             check = [_x,_y,_z, 1]
             print(_x,_y,_z)
             if checkear_nozero(check):
-                p1.append(check)
+                p1.append(check)"""
 
-tiempos_totales = []
+tiempos_totales  = []
 tiempos_totales1 = []
 tiempos_totales2 = []
-costes_totales = []
-drop_rate_total = []
+costes_totales   = []
+drop_rate_total  = []
 
 for tipo in p1:
     if len(tipo) == 1:
@@ -285,7 +285,7 @@ for tipo in p1:
                         moves[ganadores[x]] = [-1,-2]
                         for y in caminitos[ganadores[x]]:
                             veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] += 1
-                            tiemp += 2 * net2[y[0]][y[1]]['weight'] * veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] - 1
+                            tiemp += (2 * veces[np.where((np.array(all_edges2) == y).all(axis=1))[0][0]] - 1) * net2[y[0]][y[1]]['weight']
                             net1.remove_edges_from([y])
                             net2[y[0]][y[1]]['color'] = colores[envio]
                         envio += 1
@@ -357,7 +357,13 @@ axs[1].legend(loc='upper left')
 plt.show()
 """
 
-"""
+print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[0],np.add(costes_totales[0],tiempos_totales1[0])[-1],tiempos_totales1[0][-1],costes_totales[0][-1]))
+print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[1],np.add(costes_totales[1],tiempos_totales1[1])[-1],tiempos_totales1[1][-1],costes_totales[1][-1]))
+print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[2],np.add(costes_totales[2],tiempos_totales1[2])[-1],tiempos_totales1[2][-1],costes_totales[2][-1]))
+print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[3],np.add(costes_totales[3],tiempos_totales1[3])[-1],tiempos_totales1[3][-1],costes_totales[3][-1]))
+print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[4],np.add(costes_totales[4],tiempos_totales1[4])[-1],tiempos_totales1[4][-1],costes_totales[4][-1]))
+print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[5],np.add(costes_totales[5],tiempos_totales1[5])[-1],tiempos_totales1[5][-1],costes_totales[5][-1]))
+
 # funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(3, 1)
@@ -379,7 +385,6 @@ axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packets')
 plt.show()
-"""
 
 """
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -460,7 +465,7 @@ axs[1, 0].legend(loc='upper right')
 plt.show()
 """
 
-max_x = 0
+"""max_x = 0
 max_y = 0
 costs_list_c = []
 times_list_c = []
@@ -497,4 +502,4 @@ plt.ylabel('Routing time')
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
 plt.legend(by_label.values(), by_label.keys(), ncol=1)
-plt.show()
+plt.show()"""
