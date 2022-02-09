@@ -10,7 +10,8 @@ from qiskit.extensions import RXGate, RYGate, RZGate
 def generar_mapa():
     a = 0
     while (np.linalg.matrix_rank(a)!=n1):
-        a = np.random.randint(n3, size=(n1,n1))
+        #a = np.random.randint(n3, size=(n1,n1))
+        a = n3 * np.random.rand(n1,n1)
         np.fill_diagonal(a,0)
         a = np.tril(a) + np.tril(a, -1).T
     return a
@@ -188,8 +189,8 @@ def checkear_nozero(check):
 n1 = 10                                                                                         # cantidad de ciudades
 n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
 #n2_array = [10 * n1]                                                                           # cantidad de paquetes
-n3 = 13                                                                                         # distancia máxima
-n4 = 10                                                                                         # cantidad de iteraciones
+n3 = 14                                                                                          # distancia máxima
+n4 = 20                                                                                         # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
