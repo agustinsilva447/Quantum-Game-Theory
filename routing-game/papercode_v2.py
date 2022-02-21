@@ -186,22 +186,22 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 10                                                                                         # cantidad de ciudades
-n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))         # cantidad de paquetes
-#n2_array = [10 * n1]                                                                           # cantidad de paquetes
-n3 = 14                                                                                         # distancia máxima
-n4 = 20                                                                                         # cantidad de iteraciones
+n1 = 3                                                                                         # cantidad de ciudades
+#n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))       # cantidad de paquetes
+n2_array = [9]                                                                                 # cantidad de paquetes
+n3 = 2.6                                                                                       # distancia máxima
+n4 = 100                                                                                       # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 #p1 = [[0.1], [0.3], [0.5], [0.7], [0.9]]
-p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
+#p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
-"""probas = np.arange(0, 1, 0.1)            
+probas = np.arange(0, 1, 0.1)            
 for _p in probas:                       # probabilidades de ceder
     p1.append([_p])
-p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro"""
+p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
 """
 probas = np.arange(0.3,0.8,0.1)            
@@ -316,6 +316,9 @@ for tipo in p1:
     tiempos_totales2.append(tiempos2)
     costes_totales.append(costes)    
 
+for idx in range(len(p1)):
+    print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[idx],np.add(costes_totales[idx],tiempos_totales1[idx])[-1],tiempos_totales1[idx][-1],costes_totales[idx][-1]))
+
 """
 print(crear_circuito(2,tipo))
 print("La cantidad de paquetes enviados en el gráfico es {}/{}".format(envio, n2))
@@ -357,15 +360,8 @@ axs[1].set_ylabel('Time')
 axs[1].legend(loc='upper left')
 plt.show()
 """
-
-print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[0],np.add(costes_totales[0],tiempos_totales1[0])[-1],tiempos_totales1[0][-1],costes_totales[0][-1]))
-print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[1],np.add(costes_totales[1],tiempos_totales1[1])[-1],tiempos_totales1[1][-1],costes_totales[1][-1]))
-print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[2],np.add(costes_totales[2],tiempos_totales1[2])[-1],tiempos_totales1[2][-1],costes_totales[2][-1]))
-print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[3],np.add(costes_totales[3],tiempos_totales1[3])[-1],tiempos_totales1[3][-1],costes_totales[3][-1]))
-print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[4],np.add(costes_totales[4],tiempos_totales1[4])[-1],tiempos_totales1[4][-1],costes_totales[4][-1]))
-print("p = {}. Tiempo_tot = {:.3f}. Tiempo_rou = {:.3f}. Tiempo_tra = {:.3f}.".format(p1[5],np.add(costes_totales[5],tiempos_totales1[5])[-1],tiempos_totales1[5][-1],costes_totales[5][-1]))
-
-# funcion para 5 probabilidades y 1 cuántica
+    
+"""# funcion para 5 probabilidades y 1 cuántica
 c = ['b', 'g', 'c', 'm', 'y', 'r']
 fig, axs = plt.subplots(3, 1)
 axs[0].set_title("Traveling time ({} nodes)".format(n1))
@@ -385,7 +381,7 @@ axs[0].legend(bbox_to_anchor=(1,1))
 axs[1].set_ylabel('Time')
 axs[2].set_ylabel('Time')
 axs[2].set_xlabel('Number of packets')
-plt.show()
+plt.show()"""
 
 """
 c = ['b', 'g', 'c', 'm', 'y', 'r']
@@ -466,7 +462,7 @@ axs[1, 0].legend(loc='upper right')
 plt.show()
 """
 
-"""max_x = 0
+max_x = 0
 max_y = 0
 costs_list_c = []
 times_list_c = []
@@ -478,7 +474,7 @@ for x,y in enumerate(p1):
     colors = '#{:0>6}'.format(np.base_repr(np.random.choice(16777215), base=16))
     if len(y) == 1:
         #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Classical (p = {})'.format(np.round(y[0],3)), marker='o')
-        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='o')
+        plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'b', label = 'Classical', marker='.')
         costs_list_c.append(costes_totales[x][-1])
         times_list_c.append(tiempos_totales1[x][-1])
         if costes_totales[x][-1] > max_x:
@@ -490,7 +486,7 @@ for x,y in enumerate(p1):
             plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'IBMQ = {}'.format(y[3]), marker='o')
         else:
             #plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1], color = colors, label = 'Quantum (c = {})'.format(np.round(y[3],3)), marker='.')
-            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='.')
+            plt.plot(costes_totales[x][-1], tiempos_totales1[x][-1],'r', label = 'Quantum', marker='o')
             costs_list_q.append(costes_totales[x][-1])
             times_list_q.append(tiempos_totales1[x][-1])  
 plt.plot(costs_list_c, times_list_c, 'b') #, label = 'Classical')
@@ -503,4 +499,4 @@ plt.ylabel('Routing time')
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
 plt.legend(by_label.values(), by_label.keys(), ncol=1)
-plt.show()"""
+plt.show()
