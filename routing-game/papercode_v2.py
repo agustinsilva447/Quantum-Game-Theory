@@ -190,7 +190,7 @@ n1 = 3                                                                          
 #n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))       # cantidad de paquetes
 n2_array = [9]                                                                                 # cantidad de paquetes
 n3 = 2.6                                                                                       # distancia máxima
-n4 = 100                                                                                       # cantidad de iteraciones
+n4 = 50                                                                                        # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
@@ -298,16 +298,16 @@ for tipo in p1:
             if ((p+1)%(tests/2) == 0):
                 print("{:0>3} - Coste final = Tiempo/Envio = {}/{} = {}".format(p+1, int(tiemp), envio, temp))
             coste += temp   
-            dr += (envio)/(n2)
-        dr = (dr)/(tests)
+            dr += envio/n2
         t = t / tests
         t1 = t1 / tests
         t2 = t2 / tests
-        drop_rate.append(dr)
+        dr = dr / tests
+        coste = coste / tests
         tiempos.append(t)
         tiempos1.append(t1)
         tiempos2.append(t2)
-        coste = coste / tests
+        drop_rate.append(dr)
         costes.append(coste)
         print("{:0>3} - Versión {} ({} = {}) para {} ciudades y {} paquetes. Traveling time = {}. Routing Time = {}\n".format(cant+1, version, version_2, tipo, n1, n2, coste, t1))
     drop_rate_total.append(drop_rate)        
