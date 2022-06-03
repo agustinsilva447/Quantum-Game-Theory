@@ -186,11 +186,11 @@ def checkear_nozero(check):
     measurement = execute(circ, backend=backend, shots=1000).result().get_counts(circ)
     return ['00'] != list(measurement.keys())
 
-n1 = 3                                                                                         # cantidad de ciudades
+n1 = 10                                                                                        # cantidad de ciudades
 #n2_array = np.arange(int(0.5*np.ceil(n1)), int(np.ceil(10 * n1)), int(0.5*np.ceil(n1)))       # cantidad de paquetes
-n2_array = [9]                                                                                 # cantidad de paquetes
-n3 = 2.6                                                                                       # distancia máxima
-n4 = 50                                                                                        # cantidad de iteraciones
+n2_array = [100]                                                                               # cantidad de paquetes
+n3 = 140                                                                                       # distancia máxima
+n4 = 200                                                                                       # cantidad de iteraciones
 
 p1 = []
 #p1 = [[0], [0.25], [0.5], [0.75], [0.9]]
@@ -198,9 +198,9 @@ p1 = []
 #p1 = [[0.1], [0.3], [0.5], [0.7], [0.9]]
 #p1 = [[0.1], [0.3], [0.5], [0.7], [0.9], [np.pi/2, np.pi/4, 0, 1]]
 
-probas = np.arange(0, 1, 0.1)            
+"""probas = np.arange(0, 1, 0.1)            
 for _p in probas:                       # probabilidades de ceder
-    p1.append([_p])
+    p1.append([_p])"""
 p1.append([np.pi/2, np.pi/4, 0, 1])     # Pareto sí y Nash no, Puro
 
 """
